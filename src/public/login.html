@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+    <header class="bg-dark">
+        <div class="container">
+            <nav class="navbar navbar-dark">
+                <div class="container d-flex">
+                    <a href="/" class="navbar-brand display-1">
+                        Inicio
+                    </a>
+
+                    
+
+                    <!-- <div class="user text-white d-flex align-items-center">
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownLink">Sala 44</button>
+    
+                            <ul class="dropdown-menu" aria-labelledby="dropdownLink">
+                                <li><a href="#" class="dropdown-item">Compartir enlace <i class="bi bi-share"></i></a></li>
+                                <li><a href="#" class="dropdown-item">Salir <i class="bi bi-x"></i></a></li>
+                            </ul>
+                        </div>
+
+                        <div class="fs-4">
+                            Elii <i class="bi bi-person-circle"></i>
+                        </div>
+                    </div> -->
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="row form bg-dark text-white rounded-2 border border-warning p-2" id="register">
+
+                <h4 class="display-6">Registrarse</h4>
+                <form action="/" method="post">
+
+                    <div>
+                        <label for="user">Usuario:</label>
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <label for="pass">Contraseña:</label>
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-key-fill"></i></div>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Registrarse</button>
+                    </div>
+
+                    <div class="mt-1">
+                        <span class="form-text text-white">¿Ya tienes una cuenta? <button type="button" class="btn btn-link text-decoration-none" onclick="showLogin()">Iniciar sesion</button></span>
+                    </div>
+                </form>
+                
+            </div>
+
+            <div class="row form bg-dark text-white rounded-2 border border-warning p-2 d-none" id="login">
+
+                <h4 class="display-6">Iniciar sesion</h4>
+                <form action="/" method="get">
+
+                    <div>
+                        <label for="user">Usuario:</label>
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <label for="pass">Contraseña:</label>
+                        <div class="input-group">
+                            <div class="input-group-text"><i class="bi bi-key-fill"></i></div>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+                    </div>
+
+                    <div class="mt-1">
+                        <span class="form-text text-white">¿No tienes una cuenta? <button type="button" class="btn btn-link text-decoration-none" onclick="showRegister()">Registrarse</button></span>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </main>
+    
+    <div class="modal" id="modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error al <span id="err">Iniciar sesion</span></h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p id="text">Intenta nuevamente</p>
+                </div>
+    
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrado correctamente</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Inicia sesion</p>
+
+                    <form action="/" method="get">
+
+                        <div>
+                            <label for="user">Usuario:</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                                <input type="text" name="username" class="form-control" required>
+                            </div>
+                        </div>
+    
+                        <div class="mt-2">
+                            <label for="pass">Contraseña:</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-key-fill"></i></div>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                        </div>
+    
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Iniciar sesion</button>
+                        </div>
+                    </form>
+                </div>
+    
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/index.js"></script>
+</body>
+</html>

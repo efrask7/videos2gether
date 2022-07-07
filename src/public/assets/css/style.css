@@ -1,0 +1,99 @@
+body {
+    display: grid;
+    grid-template-areas: 
+        "header"
+        "main";
+    grid-template-rows: 60px 1fr;
+    height: 100vh;
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+.video {
+    width: 16rem;
+    height: 16rem;
+}
+
+.img-footer {
+    width: 2rem;
+    height: 2rem;
+}
+
+p {
+    display: inline-block;
+}
+
+.search-bar > input {
+    width: 80%;
+    display: inline-block;
+}
+
+.search-bar {
+    width: 25rem;
+}
+
+.frame {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.controls {
+    width: 90%;
+}
+
+.scale {
+    transition: transform .3s;
+}
+
+.scale:hover {
+    transform: scale(1.2);
+}
+
+#messages {
+    height: 90%;
+    overflow: hidden;
+}
+
+.username {
+    font-weight: bold;
+    color: #5f0;
+}
+
+.join {
+    color: #5f5;
+}
+
+.leave {
+    color: #c60
+}
+
+.self {
+    font-weight: bold;
+    color: #0cf;
+}
+
+.input-m {
+    display: flex;
+    justify-content: center;
+}
+
+.input-m > input {
+    display: inline-block;
+    width: 80%;
+}
+
+.input-m > button {
+    width: 15%;
+}
+
+.frame > video {
+    width: 90%;
+}

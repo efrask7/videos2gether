@@ -1,0 +1,32 @@
+body {
+    display: grid;
+    grid-template-areas: 
+        "header"
+        "main"
+        "footer";
+    grid-template-rows: 60px 1fr 120px;
+    height: 100vh;
+}
+
+header {
+    grid-area: header;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
+}
+
+main > .container {
+    display: grid;
+    place-content: center;
+    height: 100%;
+}
+
+.form {
+    width: 30rem;
+    height: 20rem;
+}

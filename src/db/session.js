@@ -4,7 +4,7 @@ const session_sequelize = new Sequelize('database', 'user', 'password', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: 'sessions.sqlite',
+    storage: 'db/sqlite/sessions.sqlite',
 });
 
 export { session_sequelize }; 

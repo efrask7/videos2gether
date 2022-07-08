@@ -20,7 +20,7 @@
                             <%= room.name %>
                         </a>
     
-                        <button class="btn"><i class="bi bi-share text-white"></i></button>
+                        <button class="btn" type="button" onclick="new bootstrap.Modal(document.getElementById('copyLink')).show()"><i class="bi bi-share text-white"></i></button>
                     </div>
 
                     <div class="search-bar justify-self-center">
@@ -29,7 +29,7 @@
 
                     <div class="user text-white d-flex align-items-center">
                         <div class="fs-4">
-                            <span id="user"><%= user.user%></span> <i class="bi bi-person-circle"></i>
+                            <span id="user"><%= user.user %></span> <i class="bi bi-person-circle"></i>
                         </div>
                         <div class="dropdown ms-2">
                             <a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
@@ -85,11 +85,14 @@
                         </div>
                     </div>
     
-                    <p id="title" class="text-white fs-3">TITULO DEL VIDEO</p>
+                    <p id="title" class="text-white fs-3">No se esta reproduciendo nada</p>
                 </div>
     
                 <div class="col-3" style="height: 50rem;">
-                    <h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
+                        <button type="button" class="btn" onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i class="bi bi-person-fill text-white"></i> <span id="usersOnline" class="text-success"> <%= room.users %> </span></button>
+                    </div>
                     <div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2" id="messages">
                         <!-- <div class="userJoin text-secondary w-100">
                             <span class="join">elii_sk</span> entro a la sala
@@ -128,7 +131,7 @@
     </div>
 
     <div class="modal" id="modal">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Resultados de la busqueda</h5>
@@ -146,9 +149,67 @@
         </div>
     </div>
 
+    <div class="modal" id="copyLink">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Comparte la sala!</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p id="url" class="btn-link"><span id="protocol">http://</span><span id="url_location"></span><span id="query">/room?id=<%= room.id %>&password=<%= room.pw %></span></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" onclick="copyUrl('<%= room.id %>', '<%= room.pw %>')"><i class="bi bi-clipboard"></i> Copiar link</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="users">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-fill text-success"></i> Usuarios en la sala:</h5>
+                    <button class="btn btn-close" type="button" data-bs-toggle="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-hover table-responsive text-center">
+                        <thead class="table-info">
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Expulsar</th>
+                                <th scope="col">Banear</th>
+                                <th scope="col">Transferir admin</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="t-body">
+                            <!-- <tr>
+                                <th scope="row">elii_sk</th>
+                                <td><a class="text-warning" type="button"><i class="bi bi-eject"></i></a></td>
+                                <td><a class="text-danger" type="button"><i class="bi bi-x"></i></a></td>
+                                <td><a class="text-primary" type="button"><i class="bi bi-star"></i></a></td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/roomMsg.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

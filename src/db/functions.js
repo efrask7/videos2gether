@@ -51,17 +51,17 @@ const addRoom = async (name, creator, secret, pass, callback) => {
     }
 }
 
-const searchRoom = async (name, password, id, callback) => {
-    if (id) {
-        const tag = await rooms.findOne({ where: { id: id} });
+const searchRoom = async (name, password, room, callback) => {
+    if (room) {
+        const tag = await rooms.findOne({ where: {id: room} });
         if (!tag) return callback(false);
 
         if (tag.get('private') == 1) {
             if (tag.get('password') != password) return callback(false); //regresa que la contra no es la misma
 
-            return callback(true, tag.get('name')); //regresa la sala pq pos la contra estaba bien
+            return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq pos la contra estaba bien
         } else {
-            return callback(true, tag.get('name')); //regresa la sala pq no tiene contra
+            return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq no tiene contra
         }
 
     } else {
@@ -72,5 +72,7 @@ const searchRoom = async (name, password, id, callback) => {
     }
 
 }
+
+
 
 export { newUser, searchUser, addRoom, searchRoom };

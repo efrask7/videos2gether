@@ -7,6 +7,12 @@ socket.on('disconnect', () => {
     })
 })
 
+document.getElementById('url_location').innerHTML = window.location.host;
+
+const copyUrl = (id, pw) => {
+    let url = `http://${window.location.host}/room?id=${id}&password=${pw}`;
+    navigator.clipboard.writeText(url);
+}
 
 
 let data = new URLSearchParams(window.location.search);
@@ -24,8 +30,37 @@ const newMsg = (toSend) => {
 
 socket.emit('connected', {user: username, room: data.get('id') });
 
-socket.on('userJoin', (user) => userJoin(user));
-socket.on('userLeave', (user) => userLeave(user));
+socket.on('userJoin', data => {
+    userJoin(data.user);
+    addUserTable(data.user);
+
+    let online = document.getElementById('usersOnline');
+
+    online.innerHTML = Number(online.innerHTML)+1; 
+});
+
+socket.on('ping', newU => {
+    if (newU == socket.id) return;
+    socket.emit('pong', ({ user: username, socketId: socket.id }));
+});
+
+socket.on('addUsers', data => {
+    console.log(data)
+    console.log(data[0][2])
+    for (let i in data[0]) {
+        if (data[0][i] == username) continue;
+        addUserTable(data[0][i]);
+    }
+});
+
+socket.on('userLeave', (user) => {
+    userLeave(user);
+    removeUserTable(user);
+
+    let online = document.getElementById('usersOnline');
+
+    online.innerHTML = Number(online.innerHTML)-1; 
+});
 
 socket.on('video_error', (msg) => console.log(msg));
 

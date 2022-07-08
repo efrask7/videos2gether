@@ -4,7 +4,7 @@ const sequelize = new Sequelize('database', 'user', 'password', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: 'users.sqlite',
+    storage: 'db/sqlite/users.sqlite',
 });
 
 const users = sequelize.define('users', {

@@ -4,7 +4,7 @@ const sequelize = new Sequelize('database', 'user', 'password', {
     host: 'localhost',
     dialect: 'sqlite',
     logging: false,
-    storage: 'rooms.sqlite',
+    storage: 'db/sqlite/rooms.sqlite',
 });
 
 const rooms = sequelize.define('rooms', {
@@ -39,6 +39,11 @@ const rooms = sequelize.define('rooms', {
     },
     status: {
         type: Sequelize.STRING,
+        allowNull: true
+    },
+    users: {
+        type: Sequelize.STRING,
+        defaultValue: JSON.stringify({"users": []}),
         allowNull: true
     }
 });

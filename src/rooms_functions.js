@@ -207,4 +207,52 @@ const changeName = async (room, newName) => {
     return true;
 }
 
-export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName };
+const addUserToRoom = async (room, name) => {
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return;
+
+    let users = JSON.parse(tag.get('users'));
+
+    if (!users.users[0]) {
+        users.users[0] = name;
+        await rooms.update({ users: JSON.stringify(users) }, { where: {id: room} });
+        return;
+    }
+
+    for (let i in users.users) {
+        if (users.users[i] == name) return;
+    }
+
+    users.users.push(name);
+
+    await rooms.update({ users: JSON.stringify(users) }, { where: {id: room} });
+}
+
+const removeUserFromRoom = async (room, name) => {
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return;
+
+    let users = JSON.parse(tag.get('users'));
+
+    let newUsers = [];
+
+    for (let i in users.users) {
+        if (users.users[i] == name) continue;
+        newUsers.push(users.users[i]);
+    }
+
+    let json = { users: newUsers };
+
+    await rooms.update({ users: JSON.stringify(json) }, { where: {id: room} });
+}
+
+const getUsers = async (room) => {
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return;
+
+    let users = JSON.parse(tag.get('users'));
+
+    return Array(users.users);
+}
+
+export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom };

@@ -13,7 +13,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { session_sequelize } from './db/session.js';
 import { getVideo, getVideoAndAudio } from './ytdl-functions.js';
-import { addOnlineM, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getMyRooms, nextV, playingVideo, previousV, removeOnlineM, stopV, updateStatus, updateTime } from './rooms_functions.js';
+import { addOnlineM, addUserToRoom, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getMyRooms, getUsers, nextV, playingVideo, previousV, removeOnlineM, removeUserFromRoom, stopV, updateStatus, updateTime } from './rooms_functions.js';
 
 const sequelizeS = SequelizeStore(session.Store);
 
@@ -29,7 +29,7 @@ const sessionDB = new sequelizeS({
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
     secret: "secreto__lol",
     store: sessionDB,
@@ -152,6 +152,7 @@ app.post('/room', (req, res) => {
 });
 
 app.get('/room', (req, res) => {
+    console.log(req.query);
     if (req.query.exit) {
         req.session.room = 0;
         req.session.roomPw = null;
@@ -159,8 +160,8 @@ app.get('/room', (req, res) => {
 
     if (!req.query.name && !req.query.id) return res.redirect('/');
 
-    if (req.query.id & !req.query.err) {
-        searchRoom(null, req.query.password, req.query.id, (correctPw, name) => {
+    if (req.query.id) {
+        searchRoom(null, req.query.password, req.query.id, (correctPw, name, online) => {
             if (!correctPw) {
                 return res.redirect(`/?id=${req.query.id}&err=1`);
             } 
@@ -171,28 +172,37 @@ app.get('/room', (req, res) => {
             if (!req.query.video) {
                 playingVideo(req.query.id, (roomFounded, video_id, time, status, title) => {
                     if (!roomFounded) return;
-                    if (!video_id) return res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password }, user: { user: req.session.username } });
+                    if (!video_id) return res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username } });
     
                     res.redirect(`/room?id=${req.query.id}&password=${req.query.password}&video=${video_id}&current=${time}&status=${status}&title=${title}`);
                 });
-            } else res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password }, user: { user: req.session.username } });
+            } else res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username } });
         });
     }
 });
 
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
 
     let id;
     let user;
 
-    socket.on('connected', (data) => {
+    socket.on('connected', async (data) => {
         socket.join(data.room);
         console.log(`Agregado el id ${socket.id} a la sala ${data.room}`);
-        io.in(data.room).emit('userJoin', data.user);
+        io.in(data.room).emit('userJoin', { user: data.user, uId: socket.id });
         id = data.room;
         user = data.user;
         addOnlineM(id);
+
+        addUserToRoom(data.room, data.user);
+
+        let users = await getUsers(data.room);
+
+        setTimeout(() => {
+            socket.emit('addUsers', users); 
+        }, 3000);
+        
     });
 
     socket.on('msg', (data) => {
@@ -208,6 +218,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         io.in(id).emit('userLeave', user);
         removeOnlineM(id);
+        removeUserFromRoom(id, user);
     });
 
     socket.on('currentTime', time => {

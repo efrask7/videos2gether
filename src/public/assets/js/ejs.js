@@ -51,6 +51,59 @@ if (window.location.search) {
                 break;
         }
     }
+
+    const success = data.get('success');
+    if (success == 1) {
+        new bootstrap.Modal(document.getElementById('trash')).show();
+    } else if (success == 0) {
+        new bootstrap.Modal(document.getElementById('trashErr')).show();
+    } else if (success == 2) {
+        new bootstrap.Modal(document.getElementById('newPassword')).show();
+    } else if (success == -2) {
+        new bootstrap.Modal(document.getElementById('newPasswordErr')).show();
+    } else if (success == 3) {
+        new bootstrap.Modal(document.getElementById('newName')).show();
+    } else if (success == -3) {
+        new bootstrap.Modal(document.getElementById('newNameErr')).show();
+    }
+}
+
+const showPw = (pass) => {
+    document.getElementById('pwText').innerHTML = pass;
+
+    new bootstrap.Modal(document.getElementById('seePw')).show();
+}
+
+const showFormCh = (id) => {
+    document.getElementById('editId').value = id;
+
+    new bootstrap.Modal(document.getElementById('form-editPw')).show();
+}
+
+const showFormNew = (id) => {
+    document.getElementById('newId').value = id;
+
+    new bootstrap.Modal(document.getElementById('form-newPw')).show();
+}
+
+const showFormChN = (id) => {
+    document.getElementById('newIdN').value = id;
+
+    new bootstrap.Modal(document.getElementById('form-editName')).show();
+}
+
+let idToDelete;
+let pwToDelete;
+
+const showWarning = (id, password) => {
+    idToDelete = id;
+    pwToDelete = password;
+
+    new bootstrap.Modal(document.getElementById('sure')).show();
+}
+
+const deleteRoom = () => {
+    window.location = `/?deleteR=1&id=${idToDelete}&password=${pwToDelete}`;
 }
 
 window.history.pushState(null, null, `${window.location.pathname}`);

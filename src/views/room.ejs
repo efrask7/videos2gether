@@ -53,23 +53,42 @@
             <div class="row">
                 <div class="col-9 justify-content-center d-flex flex-wrap">
                     <div class="frame">
-                        <video id="video_player" class="border border-secondary"></video>
+                        <video id="video_player" class="border border-secondary">
+                            <!-- <audio id="audio_player"></audio> -->
+                        </video>
+
                         <div class="controls mt-1 d-flex justify-content-between">
                             <div class="btn-group">
-                                <button class="btn scale"><i class="bi bi-play text-light"></i></button>
-                                <button class="btn scale"><i class="bi bi-pause text-light"></i></button>
-                                <button class="btn scale"><i class="bi bi-skip-backward text-light"></i></button>
-                                <button class="btn scale"><i class="bi bi-skip-forward text-light"></i></button>
+                                <button class="btn scale" type="button" onclick="resume()"><i class="bi bi-play text-light"></i></button>
+                                <button class="btn scale" type="button" onclick="pause()"><i class="bi bi-pause text-light"></i></button>
+                                <button class="btn scale" type="button" onclick="previous()"><i class="bi bi-skip-backward text-light"></i></button>
+                                <button class="btn scale" type="button" onclick="next()"><i class="bi bi-skip-forward text-light"></i></button>
+                                <div class="dropdown dropup">
+                                    <button class="btn scale dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                        <i class="bi bi-volume-up text-light"></i>
+                                    </button>
+
+                                    <input type="range" id="volume" class="dropdown-menu form-range" value="1" min="0" max="1" step="0.1">
+                                </div>
+                            </div>
+
+                            <div class="time d-flex text-white" style="width: 40rem;">
+                                <span class="me-2" id="current-time">0:00</span>
+                                <input type="range" min="0" max="230" class="form-range" id="time-range">
+                                <span class="ms-2" id="max-time">0:00</span>
                             </div>
     
-                            <button class="btn scale"><i class="bi bi-fullscreen text-light"></i></button>
+                            <div class="btn-group">
+                                <button class="btn scale" onclick="player.requestPictureInPicture()"><i class="bi bi-pip text-light"></i></button>
+                                <button class="btn scale" onclick="player.requestFullscreen()"><i class="bi bi-fullscreen text-light"></i></button>
+                            </div>
                         </div>
                     </div>
     
                     <p id="title" class="text-white fs-3">TITULO DEL VIDEO</p>
                 </div>
     
-                <div class="col-3">
+                <div class="col-3" style="height: 50rem;">
                     <h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
                     <div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2" id="messages">
                         <!-- <div class="userJoin text-secondary w-100">
@@ -90,43 +109,23 @@
                     </div>
                 </div>
             </div>
-
-            <!-- <div id="player" class="rounded col-xs-10 offset-lg-3 col-lg-6 d-flex justify-content-center flex-wrap" style="background: #222;">
-    
-                <div class="frame col-12 d-flex justify-content-center mt-2">
-                    <video id="video_player" src="video.mp4"></video>
-                </div>
-    
-                <div class="info col-12 d-flex justify-content-center flex-wrap">
-                    <p id="title" class="display-6 text-white fw-semibold col-12 text-center">Clickea el video antes de buscar!</p>
-    
-                    <p id="duration" class="text-secondary fw-bold"><span id="actual"></span> - <span id="max"></span></p>
-                </div>
-    
-                <div class="btn-group d-flex mt-4">
-                    <button type="button" class="btn btn-primary me-2 rounded-circle fs-5" style="height: 3rem; width: 3rem;" onclick="resume()"><i class="bi bi-play"></i></button>
-                    <button type="button" class="btn btn-primary me-2 rounded-circle fs-5" style="height: 3rem; width: 3rem;" onclick="pause()"><i class="bi bi-pause"></i></button>
-                    <button type="button" class="btn btn-primary me-2 rounded-circle fs-5" style="height: 3rem; width: 3rem;" onclick="mute()"><i class="bi bi-volume-mute"></i></button>
-                    <button type="button" class="btn btn-primary rounded-circle fs-5" style="height: 3rem; width: 3rem;" onclick="unmute()"><i class="bi bi-volume-up"></i></button>
-                </div>
-    
-                <div class="input w-100 mt-2 text-center">
-                    <input type="range" id="volume" min="0" max="100" value="100" class="form-range w-50">
-                    <label for="volume" class="text-white w-100">Volumen: <span id="volume-value">100%</span></label>
-                </div>
-            </div> -->
-            
-            <!-- <div class="d-flex flex-wrap justify-content-center bg-danger p-2 border border-light rounded mt-4">
-                <div class="form-floating col-xs-9 col-lg-4">
-                    <input type="text" id="search-q" placeholder="Ingresa el nombre de un video:" class="form-control">
-                    <label for="search-q">Busca un video</label>
-                </div>
-    
-                <button type="button" onclick="search()" class="btn btn-primary ms-2 col-xs-3 col-lg-2">Buscar</button>
-            </div>  -->
         
         </div>
     </main>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong class="me-auto">Error al conectar con el servidor</strong>
+                <button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="toast-body">
+                La pagina se recargara al conectar.
+            </div>
+        </div>
+    </div>
 
     <div class="modal" id="modal">
         <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -137,9 +136,7 @@
                 </div>
 
                 <div class="modal-body d-flex flex-wrap justify-content-between text-center" id="results">
-                    <!-- <div id="results" class="d-flex flex-wrap mt-2 justify-content-between text-center">
-    
-                    </div>  -->
+
                 </div>
 
                 <div class="modal-footer">

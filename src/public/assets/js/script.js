@@ -1,5 +1,12 @@
 const socket = io();
 
+socket.on('disconnect', () => {
+    let toast = new bootstrap.Toast(document.getElementById('liveToast')).show();
+    socket.on('connect', () => {
+        window.location = '/';
+    })
+})
+
 
 
 let data = new URLSearchParams(window.location.search);
@@ -30,8 +37,6 @@ socket.on('msg', (data) => {
     if (data.name == username) newMsgFr(data.name, data.message, true);
     else newMsgFr(data.name, data.message, false);
 });
-
-socket.on('user_connected', (evt) => console.log(evt));
 
 const input_msg = document.getElementById('input-msg');
 let onInput = false;
@@ -114,23 +119,124 @@ const userLeave = (user) => {
     messageContainer.appendChild(msgCont);
 }
 
+const nowPlaying = (title) => {
+    let msgCont = document.createElement('div');
+    msgCont.classList.add('text-secondary');
+    msgCont.classList.add('w-100');
+
+    let vidN = document.createElement('span');
+    vidN.classList.add('join');
+    vidN.innerHTML = title;
+
+    let msg = document.createElement('span');
+    msg.innerHTML = 'Reproduciendo: ';
+
+    msgCont.appendChild(msg);
+    msgCont.appendChild(vidN);
+
+    messageContainer.appendChild(msgCont);
+}
+
+const newStatus = (user, status) => {
+    let msgCont = document.createElement('div');
+    msgCont.classList.add('text-secondary');
+    msgCont.classList.add('w-100');
+
+    let userS = document.createElement('span');
+    userS.classList.add('join');
+    userS.innerHTML = user;
+
+    let msg = document.createElement('span');
+    msg.innerHTML = ` ${status} el video`;
+
+    msgCont.appendChild(userS);
+    msgCont.appendChild(msg);
+
+    messageContainer.appendChild(msgCont);
+}
+
 const player = document.getElementById('video_player');
+//const playerAud = document.getElementById('audio_player');
+
+const getMinutes = (s) => {
+
+    var minutes = Math.floor(s/60);
+    var seconds = undefined;
+
+    if (minutes < 10) minutes = `0${minutes}`;
+
+    if (s % 60 != 0) {
+        seconds = Math.floor(s-(60 * minutes));
+        if (seconds < 10) seconds = `0${seconds}`;
+    }
+
+    return `${minutes}:${seconds}`;
+}
+
+let inputRange = false;
+
+setInterval(() => {
+    if (player.paused || player.ended || inputRange) return;
+    document.getElementById('current-time').innerHTML = getMinutes(player.currentTime);
+    document.getElementById('time-range').value = player.currentTime;
+    document.getElementById('time-range').max = player.duration;
+    document.getElementById('max-time').innerHTML = getMinutes(player.duration);
+}, 1000);
+
+const t_range = document.getElementById('time-range');
+
+t_range.addEventListener('input', () => {
+    inputRange = true;
+
+    document.getElementById('current-time').innerHTML = getMinutes(t_range.value);
+});
+
+t_range.addEventListener('change', () => {
+    inputRange = false;
+
+    socket.emit('changeTime', t_range.value);
+})
+
+socket.on('newTime', time => player.currentTime = time);
 
 if (data.get('video')) {
     player.src = `rooms/${data.get('id')}/${data.get('video')}.mp4`;
     player.currentTime = data.get('current');
 
+    //playerAud.src = `rooms/${data.get('id')}/${data.get('video')}.mp3`;
+    //playerAud.currentTime = data.get('current');
+
     switch (data.get('status')) {
 
         case "playing":
-            player.muted = true;
             player.autoplay = true;
+            player.muted = true; 
+            //playerAud.muted = true;
+            //playerAud.autoplay = true;
             break;
         case "paused":
             player.pause();
+            //playerAud.pause();
             break;
     };
-}
+
+    document.getElementById('title').innerHTML = data.get('title');
+};
+
+
+socket.on('user_connected', data => {
+    if (data.s_id == socket.id) {
+        socket.emit('getDuration');
+        return;
+    }
+
+    socket.emit('currentTime', player.currentTime);
+});
+
+socket.on('durationV', time => {
+    player.currentTime = time
+    //playerAud.currentTime = time;
+});
 
 const sendUrl = (id, name) => {
     let vid = {
@@ -141,14 +247,72 @@ const sendUrl = (id, name) => {
     socket.emit('url', vid);
 }
 
-socket.on('video', (path) => {
-    player.src = '';
-    setTimeout(() => {
-        
-    player.src = path;
+socket.on('video', async (data) => {
+    const title = document.getElementById('title');
+
+    player.src = `${await data.url}`;
+    //playerAud.src = `${await data.url}.mp3`;
+    
     player.play();
-    }, 2000);
+    //playerAud.play();
+    
+    nowPlaying(data.name);
+
+    title.innerHTML = data.name;
 });
+
+player.addEventListener('ended', () => {
+    socket.emit('finish');
+    socket.emit('currentTime', player.currentTime);
+});
+
+//player.addEventListener('mouseenter', () => {
+    //if (playerAud.muted) playerAud.muted = false;
+//})
+
+socket.on('paused', e => {
+    player.pause();
+    //playerAud.pause();
+    newStatus(e, 'pauso');
+});
+
+socket.on('resumed', e => {
+    player.play();
+    //playerAud.play();
+    newStatus(e, 'reanudo');
+});
+
+socket.on('previousV', data => {
+
+});
+
+socket.on('nextV', data => {
+
+});
+
+const pause = () => {
+    socket.emit('pause', username);
+};
+
+const resume = () => {
+    socket.emit('resume', username);
+};
+
+const previous = () => {
+    socket.emit('previous', username);
+};
+
+const next = () => {
+    socket.emit('next', username);
+};
+
+const input_vol = document.getElementById('volume');
+
+input_vol.addEventListener('input', () => {
+    if (player.muted) player.muted = false;
+
+    player.volume = input_vol.value;
+})
 
 const key = 'AIzaSyBZzhwBIP2RnmNUE4omdKUDb5tnI_XXib0';
 const client = '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';

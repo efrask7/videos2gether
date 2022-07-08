@@ -12,6 +12,10 @@ const rooms = sequelize.define('rooms', {
         type: Sequelize.STRING,
         unique: false
     },
+    admin: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     online: {
         type: Sequelize.INTEGER,
         defaultValue: 0

@@ -34,16 +34,16 @@ const getAllRooms = async () => {
     const tag = await rooms.findAll();
 }
 
-const addRoom = async (name, secret, pass, callback) => {
+const addRoom = async (name, creator, secret, pass, callback) => {
 
     try {
         if (secret) {
-            const tag = await rooms.create({ name: name, password: pass, private: 1 });
-            console.log(`Nueva sala: ${tag.name} (${tag.id}) PW: si`);
+            const tag = await rooms.create({ name: name, password: pass, admin: creator, private: 1 });
+            console.log(`Nueva sala: ${tag.name} (${tag.id}) PW: si | ${creator}`);
             return callback(tag.id);
         } else {
-            const tag = await rooms.create({ name: name, private: 0 });
-            console.log(`Nueva sala: ${tag.name} (${tag.id}) PW: no`);
+            const tag = await rooms.create({ name: name, admin: creator, private: 0 });
+            console.log(`Nueva sala: ${tag.name} (${tag.id}) PW: no | ${creator}`);
             return callback(tag.id);
         }
     } catch (e) {
@@ -61,7 +61,7 @@ const searchRoom = async (name, password, id, callback) => {
 
             return callback(true, tag.get('name')); //regresa la sala pq pos la contra estaba bien
         } else {
-            return callback(); //regresa la sala pq no tiene contra
+            return callback(true, tag.get('name')); //regresa la sala pq no tiene contra
         }
 
     } else {

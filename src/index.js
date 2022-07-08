@@ -12,8 +12,8 @@ import { newUser, searchUser, addRoom, searchRoom } from './db/functions.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { session_sequelize } from './db/session.js';
-import { getVideo } from './ytdl-functions.js';
-import { playingVideo } from './rooms_functions.js';
+import { getVideo, getVideoAndAudio } from './ytdl-functions.js';
+import { addOnlineM, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getMyRooms, nextV, playingVideo, previousV, removeOnlineM, stopV, updateStatus, updateTime } from './rooms_functions.js';
 
 const sequelizeS = SequelizeStore(session.Store);
 
@@ -46,8 +46,21 @@ const DbInit = async () => {
 
 DbInit();
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
+    let publicR = await getAllRooms();
+    let iHaveRooms = false;
+
+    if (req.session.username) iHaveRooms = await getMyRooms(req.session.username);
+
+    if (req.query.deleteR) {
+        if (await getAdmin(req.query.id, req.session.username)) {
+            if (await deleteRoom(req.query.id)) {
+                return res.redirect('/?success=1');
+            } else return res.redirect('?success=0')
+        }
+    }
+    
     if (req.session.username) {
         let data = {
             method: "get",
@@ -62,7 +75,9 @@ app.get('/', (req, res) => {
 
         if (req.session.room && req.session.room != 0) return res.redirect(`/room?id=${req.session.room}&password=${req.session.roomPw}`);
 
-        return res.render('index.ejs', { user: data });
+        if (iHaveRooms) {
+            return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms });
+        } else return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false, });
     }
 
     if (req.query.username) {
@@ -85,13 +100,16 @@ app.get('/', (req, res) => {
 
             req.session.username = req.query.username;
 
-            res.render('index.ejs', { user: data });
+            if (iHaveRooms) return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms });
+
+            res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false });
         }); 
     } else res.sendFile(`${__dirname}/public/login.html`);
 
 });
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
+
     newUser(req.body.username, req.body.password, (error, data) => {
         let uData = {
             method: "post",
@@ -106,16 +124,30 @@ app.post('/', (req, res) => {
     });
 });
 
+app.post('/newPass', async (req, res) => {
+    if (await getAdmin(req.body.newId, req.session.username)) {
+        changePw(req.body.newId, req.body.password);
+        return res.redirect('/?success=2')
+    } else return res.redirect('/?success=-2');
+});
+
+app.post('/newName', async (req, res) => {
+    if (await getAdmin(req.body.newId, req.session.username)) {
+        changeName(req.body.newId, req.body.name);
+        return res.redirect('/?success=3')
+    } else return res.redirect('/?success=-3');
+});
+
 app.post('/room', (req, res) => {
     let secret;
 
     if (req.body.password) secret = true;
     else secret = false;
 
-    addRoom(req.body.name, secret, req.body.password, (id) => {
-        if (secret) return res.redirect(`/room/${id}?password=${req.body.password}`);
+    addRoom(req.body.name, req.session.username, secret, req.body.password, (id) => {
+        if (secret) return res.redirect(`/room?id=${id}&password=${req.body.password}`);
 
-        res.redirect(`/room/${id}`);
+        res.redirect(`/room?id=${id}`);
     });
 });
 
@@ -127,7 +159,7 @@ app.get('/room', (req, res) => {
 
     if (!req.query.name && !req.query.id) return res.redirect('/');
 
-    if (req.query.id) {
+    if (req.query.id & !req.query.err) {
         searchRoom(null, req.query.password, req.query.id, (correctPw, name) => {
             if (!correctPw) {
                 return res.redirect(`/?id=${req.query.id}&err=1`);
@@ -137,12 +169,13 @@ app.get('/room', (req, res) => {
             req.session.roomPw = req.query.password;
 
             if (!req.query.video) {
-                playingVideo(req.query.id, (roomFounded, video_id, time, status) => {
+                playingVideo(req.query.id, (roomFounded, video_id, time, status, title) => {
                     if (!roomFounded) return;
+                    if (!video_id) return res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password }, user: { user: req.session.username } });
     
-                    res.redirect(`/room?id=${req.query.id}&password=${req.query.password}&video=${video_id}&current=${time}&status=${status}`);
+                    res.redirect(`/room?id=${req.query.id}&password=${req.query.password}&video=${video_id}&current=${time}&status=${status}&title=${title}`);
                 });
-            } else res.render('room.ejs', { room: { id: req.query.id, name: name }, user: { user: req.session.username } });
+            } else res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password }, user: { user: req.session.username } });
         });
     }
 });
@@ -159,6 +192,7 @@ io.on('connection', (socket) => {
         io.in(data.room).emit('userJoin', data.user);
         id = data.room;
         user = data.user;
+        addOnlineM(id);
     });
 
     socket.on('msg', (data) => {
@@ -173,11 +207,58 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         io.in(id).emit('userLeave', user);
+        removeOnlineM(id);
+    });
+
+    socket.on('currentTime', time => {
+        updateTime(id, time);
+    });
+    
+    socket.on('getDuration', async () => {
+        socket.emit('durationV', await getDurationActual(id));
+    })
+
+    socket.on('pause', e => {
+        io.in(id).emit('paused', e);
+        updateStatus(id, 'paused');
+    });
+
+    socket.on('resume', e => {
+        io.in(id).emit('resumed', e);
+        updateStatus(id, 'playing');
+    });
+
+    socket.on('previous', async e => {
+        let vid = await previousV(id);
+
+        if (vid) {
+            io.in(id).emit('video', { name: vid.name, url: `rooms/${id}/${vid.id}.mp4`});
+        }
+    });
+
+    socket.on('stop', e => {
+        stopV(id);
+    });
+
+    socket.on('finish', () => {
+        updateStatus(id, 'paused');
+    })
+
+    socket.on('next', async e => {
+        let vid = await nextV(id);
+
+        if (vid) {
+            io.in(id).emit('video', { name: vid.name, url: `rooms/${id}/${vid.id}.mp4`});
+        }
+    });
+
+    socket.on('changeTime', time => {
+        io.in(id).emit('newTime', time);
     })
 
 
 
-    io.emit('user_connected', `Usuario (${socket.id}) se conecto Pog`);
+    io.emit('user_connected', { s_id: socket.id });
 
     socket.on('url', (data) => {
 
@@ -187,7 +268,7 @@ io.on('connection', (socket) => {
                 return io.in(id).emit('video_error', 'Ocurrio un error por parte del servidor :(');
             }
 
-            io.in(id).emit('video', url);
+            io.in(id).emit('video', { name: data.name, url: url });
         })
 
 

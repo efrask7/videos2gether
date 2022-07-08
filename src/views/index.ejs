@@ -43,6 +43,96 @@
     <main>
         <div class="container-fluid row">
             <div class="col-4 mt-2 offset-1">
+
+                <% if (iHaveR) {%>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
+                        <i class="bi bi-list"></i> Mis salas
+                    </button>
+                    <div class="collapse" id="myRooms">
+                        <table class="table table-hover table-responsive table-bordered text-center mt-2">
+                            <thead class="table-info">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col"><i class="bi bi-person-fill"></i></th>
+                                    <th scope="col"><i class="bi bi-shield-lock"></i></th>
+                                    <th scope="col">Contraseña</th>
+                                    <th scope="col">Borrar</ths>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (let i in myRooms) {%>
+                                <tr>
+                                    <th scope="row"><%= myRooms[i].id %></th>
+                                    <td><%= myRooms[i].name %> <a type="button" onclick="showFormChN('<%= myRooms[i].id %>')"><i class="bi bi-pencil-square text-primary"></i></a></td>
+                                    <td><%= myRooms[i].online %></td>
+                                    
+                                    <%if (myRooms[i].private) {%>
+                                    <td><i class="bi bi-lock-fill text-danger"></i></td>
+                                    <td><a type="button" onclick="showFormCh('<%= myRooms[i].id %>')"><i class="bi bi-pencil-square text-primary"></i></a> - <a type="button" onclick="showPw('<%= myRooms[i].pw %>')"><i class="bi bi-eye text-primary"></i></a></td>
+                                    <% } else { %>
+                                    <td><i class="bi bi-unlock-fill text-success"></i></td>
+                                    <td><a type="button" onclick="showFormNew('<%= myRooms[i].id %>')"><i class="bi bi-pen text-primary"></i></a></td>
+                                    <% } %>
+                                    <td><a type="button" onclick="showWarning('<%= myRooms[i].id %>', '<%= myRooms[i].pw %>')"><i class="bi bi-trash"></i></a></td>
+                                    <td><a href="/room?id=<%= myRooms[i].id%>&password=<%= myRooms[i].pw %>"><i class="bi bi-box-arrow-in-right"></i></a></td>
+                                </tr>
+                                <% } %>
+                                <!-- <tr>
+                                    <th scope="row">12</th>
+                                    <td>Sala pront</td>
+                                    <td><i class="bi bi-lock-fill text-danger"></i></td>
+                                    <td>2</td>
+                                    <td><a href="#"><i class="bi bi-pen"></i></a></td>
+                                    <td><a href="#"><i class="bi bi-trash"></i></a></td>
+                                    <td><a href="#"><i class="bi bi-box-arrow-in-right"></i></a></td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+
+                <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
+                    Mis salas
+                </button>
+                <div class="collapse" id="myRooms">
+                    <table class="table table-hover table-responsive table-bordered text-center mt-2">
+                        <thead class="table-info">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col"><i class="bi bi-shield-lock"></i></th>
+                                <th scope="col"><i class="bi bi-person-fill"></i></th>
+                                <th scope="col">Contraseña</th>
+                                <th scope="col">Borrar</ths>
+                                <th scope="col">Entrar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">23</th>
+                                <td>Sala pro</td>
+                                <td><i class="bi bi-unlock-fill text-success"></i></td>
+                                <td>4</td>
+                                <td><a href="#"><i class="bi bi-pen"></i></a></td>
+                                <td><a href="#"><i class="bi bi-trash"></i></a></td>
+                                <td><a href="#"><i class="bi bi-box-arrow-in-right"></i></a></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">12</th>
+                                <td>Sala pront</td>
+                                <td><i class="bi bi-lock-fill text-danger"></i></td>
+                                <td>2</td>
+                                <td><a href="#"><i class="bi bi-pen"></i></a></td>
+                                <td><a href="#"><i class="bi bi-trash"></i></a></td>
+                                <td><a href="#"><i class="bi bi-box-arrow-in-right"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+
                 <h1 class="display-4">Crea o unete a una sala</h1>
 
                 <nav>
@@ -112,32 +202,20 @@
             </div>
 
             <div class="col-4 offset-2 mt-2">
-                <h6 class="display-5 fs-3">Lista de salas</h6>
+                <h6 class="display-5 fs-4">Lista de salas publicas</h6>
 
                 <div class="list-group col-6">
-                    <a href="#" class="list-group-item list-group-item-action d-flex">
-                        Sala 1 <i class="bi bi-person ms-2 text-success"></i> 2 
-                        <i class="bi bi-lock ms-1 text-danger"></i> 
+
+                <% for (let i in rooms) {%>
+                    <a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
+                        <%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i> <%= rooms[i].online%>
                         <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
                     </a>
 
-                    <a href="#" class="list-group-item list-group-item-action d-flex">
-                        Sala 2 <i class="bi bi-person ms-2 text-success"></i> 5 
-                        <i class="bi bi-lock ms-1 text-danger"></i> 
-                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
-                    </a>
+                <%}%>
 
-                    <a href="#" class="list-group-item list-group-item-action d-flex">
-                        Sala 3 <i class="bi bi-person ms-2 text-success"></i> 1
-                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
-                    </a>
-
-                    <a href="#" class="list-group-item list-group-item-action d-flex">
-                        Sala 4 <i class="bi bi-person ms-2 text-success"></i> 7 
-                        <i class="bi bi-lock ms-1 text-danger"></i> 
-                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
-                    </a>
                 </div>
+
             </div>
         </div>
     </main>
@@ -161,6 +239,221 @@
         </div>
     </div>
 
+    <div class="modal" id="seePw" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Contraseña:</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+    
+                <div class="modal-body" id="pwText"></div>
+    
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="form-editPw" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar contraseña</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+                        <div class="col-12">
+                            <label for="editId" class="visually-hidden">ID:</label>
+                            <div class="input-group">
+                                <div class="input-group-text">#</div>
+                                <input type="number" name="newId" id="editId" class="form-control" placeholder="ID:" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="editNewPw" class="visually-hidden">Nueva contraseña:</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-key"></i></div>
+                                <input type="password" name="password" id="editNewPw" class="form-control" placeholder="Contraseña nueva:">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Cambiar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer justify-content-start text-secondary">
+                    Deja vacio el campo de la contraseña para hacer la sala publica
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="form-newPw" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva contraseña para la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+                        <div class="col-12">
+                            <label for="newId" class="visually-hidden">ID:</label>
+                            <div class="input-group">
+                                <div class="input-group-text">#</div>
+                                <input type="number" name="newId" id="newId" class="form-control" placeholder="ID:" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="NewPw" class="visually-hidden">Nueva contraseña:</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-key"></i></div>
+                                <input type="password" name="password" id="newPw" class="form-control" placeholder="Contraseña nueva:">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Cambiar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer justify-content-start text-secondary">
+                    Deja vacio el campo de la contraseña para hacer la sala publica
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="sure" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning"></i> ¿Estas segur@?</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    No puedes arrepentirte de borrar la sala
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="button" onclick="deleteRoom()">Si</button>
+                    <button class="btn btn-danger" type="button" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="trash">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Sala borrada!</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="trashErr">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo borrar la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="newPassword">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio la contraseña de la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="newPasswordErr">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar la contraseña de la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="form-editName" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar nombre</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/newName" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+                        <div class="col-12">
+                            <label for="newId" class="visually-hidden">ID:</label>
+                            <div class="input-group">
+                                <div class="input-group-text">#</div>
+                                <input type="number" name="newId" id="newIdN" class="form-control" placeholder="ID:" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="editNewName" class="visually-hidden">Nuevo nombre:</label>
+                            <div class="input-group">
+                                <div class="input-group-text"><i class="bi bi-cursor-text"></i></div>
+                                <input type="text" name="name" id="editNewName" class="form-control" placeholder="Nombre nuevo:">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Cambiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="newName">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio el nombre de la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="newNameErr">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar el nombre de la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/ejs.js"></script>

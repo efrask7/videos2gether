@@ -14,6 +14,9 @@ const users = sequelize.define('users', {
     },
     password: {
         type: Sequelize.STRING
+    },
+    socket_id: {
+        type: Sequelize.STRING
     }
 });
 

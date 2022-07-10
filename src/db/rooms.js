@@ -44,7 +44,12 @@ const rooms = sequelize.define('rooms', {
     users: {
         type: Sequelize.STRING,
         defaultValue: JSON.stringify({"users": []}),
-        allowNull: true
+        allowNull: false
+    },
+    banned: {
+        type: Sequelize.STRING,
+        defaultValue: JSON.stringify({"users": []}),
+        allowNull: false
     }
 });
 

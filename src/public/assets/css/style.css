@@ -45,6 +45,10 @@ p {
     flex-wrap: wrap;
 }
 
+#video_player {
+    height: 33rem;
+}
+
 .controls {
     width: 90%;
 }
@@ -96,4 +100,61 @@ p {
 
 .frame > video {
     width: 90%;
+}
+
+@media (min-width: 0) and (max-width: 576px) { /*(breakpoint - xs)*/
+    #messages {
+        font-size: 1.5rem;
+        width: 90%;
+    }
+    .time {
+        display: none;
+    }
+
+    #video_player {
+        height: 25rem;
+    }
+    #chat_container {
+        display: none;
+    }
+    .search-bar {
+        width: 15rem;
+    }
+}
+  
+@media (min-width: 576px) and (max-width: 768px) { /*(breakpoint - sm)*/
+    #messages {
+        font-size: 1.5rem;
+    }
+    .time {
+        display: none;
+    }
+    #video_player {
+        height: 10rem;
+    }
+    .search-bar {
+        width: 15rem;
+    }
+
+}
+  
+@media (min-width: 768px) and (max-width: 992px) { /*(breakpoint - md)*/
+    #chat_container {
+        
+    }
+    .time {
+        display: none;
+    }
+}
+  
+@media (min-width: 992px) and (max-width: 1200px) { /*(breakpoint - lg)*/
+    .time {
+        width: 20rem;
+    }
+}
+  
+@media (min-width: 1200px) {
+    .time {
+        width: 30rem;
+    }
 }

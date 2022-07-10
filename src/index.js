@@ -6,6 +6,7 @@ import fs from 'fs';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import SequelizeStore from 'connect-session-sequelize';
+import cookieParser from 'cookie-parser';
 import { users } from './db/users.js';
 import { rooms } from './db/rooms.js';
 import { newUser, searchUser, addRoom, searchRoom } from './db/functions.js';
@@ -14,6 +15,7 @@ import { fileURLToPath } from 'url';
 import { session_sequelize } from './db/session.js';
 import { getVideo, getVideoAndAudio } from './ytdl-functions.js';
 import { addOnlineM, addUserToRoom, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getMyRooms, getUsers, nextV, playingVideo, previousV, removeOnlineM, removeUserFromRoom, stopV, updateStatus, updateTime } from './rooms_functions.js';
+import { getSocket, setSocket } from './users_functions.js';
 
 const sequelizeS = SequelizeStore(session.Store);
 
@@ -27,14 +29,17 @@ const sessionDB = new sequelizeS({
     db: session_sequelize,
 });
 
-app.use(express.static('public'));
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
+let uSession = session({
     secret: "secreto__lol",
     store: sessionDB,
     resave: false,
-}));
+    saveUninitialized: false
+});
+
+app.use(express.static('public'));
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(uSession);
 app.set('view engine', 'ejs');
 
 const DbInit = async () => {
@@ -45,6 +50,15 @@ const DbInit = async () => {
 }
 
 DbInit();
+
+sessionDB.get('l3f4rDPqqs-HHHMBCbTRQw1yti4WAVOM', async (err, session) => {
+    if (err) return err;
+
+    console.log(session.username);
+});
+
+
+export { sessionDB };
 
 app.get('/', async (req, res) => {
 
@@ -181,6 +195,22 @@ app.get('/room', (req, res) => {
     }
 });
 
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(uSession));
+
+io.use(async (socket, next) => {
+
+    console.log(socket.request.session);
+
+    let sessionSocket = await getSocket(socket.request.session.username);
+
+    if (!sessionSocket) return next();
+
+    socket.id = sessionSocket;
+
+    next();
+})
 
 io.on('connection', async (socket) => {
 
@@ -189,11 +219,14 @@ io.on('connection', async (socket) => {
 
     socket.on('connected', async (data) => {
         socket.join(data.room);
-        console.log(`Agregado el id ${socket.id} a la sala ${data.room}`);
+        console.log(`Agregado el id ${socket.id} | ${data.user} a la sala ${data.room}`);
         io.in(data.room).emit('userJoin', { user: data.user, uId: socket.id });
         id = data.room;
         user = data.user;
         addOnlineM(id);
+        if (await getSocket(data.user)) {
+            console.log(`${data.user} ya tiene su propia ID`);
+        } else setSocket(data.user, socket.id);
 
         addUserToRoom(data.room, data.user);
 

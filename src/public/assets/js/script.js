@@ -2,9 +2,10 @@ const socket = io();
 
 socket.on('disconnect', () => {
     let toast = new bootstrap.Toast(document.getElementById('liveToast')).show();
-    socket.on('connect', () => {
-        window.location = '/';
-    })
+    
+    setTimeout(() => {
+        window.location = '/room';
+    }, 5000);
 })
 
 document.getElementById('url_location').innerHTML = window.location.host;
@@ -35,8 +36,10 @@ socket.on('userJoin', data => {
     addUserTable(data.user);
 
     let online = document.getElementById('usersOnline');
+    let onlineM = document.getElementById('usersOnlineMobile');
 
     online.innerHTML = Number(online.innerHTML)+1; 
+    onlineM.innerHTML = Number(onlineM.innerHTML)+1;
 });
 
 socket.on('ping', newU => {
@@ -58,8 +61,10 @@ socket.on('userLeave', (user) => {
     removeUserTable(user);
 
     let online = document.getElementById('usersOnline');
+    let onlineM = document.getElementById('usersOnlineMobile');
 
     online.innerHTML = Number(online.innerHTML)-1; 
+    onlineM.innerHTML = Number(onlineM.innerHTML)-1;
 });
 
 socket.on('video_error', (msg) => console.log(msg));
@@ -74,10 +79,13 @@ socket.on('msg', (data) => {
 });
 
 const input_msg = document.getElementById('input-msg');
+const input_msg_mobile = document.getElementById('input-msg_mobile');
 let onInput = false;
+let onInputM = false;
 
 document.addEventListener('keydown', (e) => {
-    if (onInput && e.key == 'Enter') sendMsg();
+    if (onInput && e.key == 'Enter') sendMsg(1);
+    if (onInputM && e.key == 'Enter') sendMsg(2);
 })
 
 input_msg.addEventListener('focus', () => {
@@ -88,13 +96,28 @@ input_msg.addEventListener('focusout', () => {
     onInput = false;
 });
 
-const sendMsg = () => {
-    if (input_msg.value == '') return;
-    msg(input_msg.value);
-    input_msg.value = '';
+input_msg_mobile.addEventListener('focus', () => {
+    onInputM = true;
+});
+
+input_msg_mobile.addEventListener('focusout', () => {
+    onInputM = false;
+});
+
+const sendMsg = (num) => {
+    if (num == 1) {
+        if (input_msg.value == '') return;
+        msg(input_msg.value);
+        input_msg.value = '';
+    } else if (num == 2) {
+        if (input_msg_mobile.value == '') return;
+        msg(input_msg_mobile.value);
+        input_msg_mobile.value = '';
+    }
 }
 
 const messageContainer = document.getElementById('messages');
+const messageContainerM = document.getElementById('messagesMobile');
 
 const newMsgFr = (user, message, self) => {
     let msgCont = document.createElement('div');
@@ -115,7 +138,10 @@ const newMsgFr = (user, message, self) => {
     msgCont.appendChild(userC);
     msgCont.appendChild(msg);
 
+    let mobileMsg = msgCont.cloneNode(true);
+
     messageContainer.appendChild(msgCont);
+    messageContainerM.appendChild(mobileMsg);
 }
 
 const userJoin = (user) => {
@@ -133,7 +159,10 @@ const userJoin = (user) => {
     msgCont.appendChild(userC);
     msgCont.appendChild(msg);
 
+    let mobileMsg = msgCont.cloneNode(true);
+
     messageContainer.appendChild(msgCont);
+    messageContainerM.appendChild(mobileMsg);
 }
 
 const userLeave = (user) => {
@@ -151,7 +180,10 @@ const userLeave = (user) => {
     msgCont.appendChild(userC);
     msgCont.appendChild(msg);
 
+    let mobileMsg = msgCont.cloneNode(true);
+
     messageContainer.appendChild(msgCont);
+    messageContainerM.appendChild(mobileMsg);
 }
 
 const nowPlaying = (title) => {
@@ -169,7 +201,10 @@ const nowPlaying = (title) => {
     msgCont.appendChild(msg);
     msgCont.appendChild(vidN);
 
+    let mobileMsg = msgCont.cloneNode(true);
+
     messageContainer.appendChild(msgCont);
+    messageContainerM.appendChild(mobileMsg);
 }
 
 const newStatus = (user, status) => {
@@ -187,7 +222,10 @@ const newStatus = (user, status) => {
     msgCont.appendChild(userS);
     msgCont.appendChild(msg);
 
+    let mobileMsg = msgCont.cloneNode(true);
+
     messageContainer.appendChild(msgCont);
+    messageContainerM.appendChild(mobileMsg);
 }
 
 const player = document.getElementById('video_player');

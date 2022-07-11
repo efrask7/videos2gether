@@ -1,4 +1,5 @@
 import { rooms } from './db/rooms.js';
+import { Op } from 'sequelize';
 
 const newValue = (name) => {
     return {
@@ -254,5 +255,11 @@ const getUsers = async (room) => {
 
     return Array(users.users);
 }
+
+const restartOnlineUsers = async () => {
+    await rooms.update({ online: 0 }, { where: {online: { [Op.gt]: 0 }}});
+}
+
+restartOnlineUsers();
 
 export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom };

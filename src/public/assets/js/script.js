@@ -1,7 +1,7 @@
 const socket = io();
 
 socket.on('disconnect', () => {
-    let toast = new bootstrap.Toast(document.getElementById('liveToast')).show();
+    new bootstrap.Toast(document.getElementById('liveToast')).show();
     
     setTimeout(() => {
         window.location = '/room';
@@ -65,6 +65,41 @@ socket.on('userLeave', (user) => {
 
     online.innerHTML = Number(online.innerHTML)-1; 
     onlineM.innerHTML = Number(onlineM.innerHTML)-1;
+});
+
+const kickUser = user => {
+    socket.emit('kick', { id: socket.id, user: user });
+};
+
+const banUser = user => {
+    socket.emit('ban', { id: socket.id, user: user });
+};
+
+const transferAdmin = user => {
+    socket.emit('newAdmin', { id: socket.id, user: user });
+}
+
+socket.on('kicked', data => {
+    if (data.id == socket.id) {
+        window.location = '/room?exit=1&kicked=1';
+    }
+    userLeaveAdmin(data.username, 'kicked', 'expulsado');
+});
+
+socket.on('banned', data => {
+    if (data.id == socket.id) {
+        window.location = '/room?exit=1&banned=1';
+    }
+    userLeaveAdmin(data.username, 'banned', 'baneado');
+});
+
+socket.on('newAdmin', data => {
+    if (data.id == socket.id) new bootstrap.Toast(document.getElementById('youAreAdmin')).show();
+    msgAdmin(data.username);
+})
+
+socket.on('admin', boolean => {
+    imAdmin = boolean;
 });
 
 socket.on('video_error', (msg) => console.log(msg));

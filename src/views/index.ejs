@@ -57,7 +57,8 @@
                                     <th scope="col"><i class="bi bi-person-fill"></i></th>
                                     <th scope="col"><i class="bi bi-shield-lock"></i></th>
                                     <th scope="col">Contraseña</th>
-                                    <th scope="col">Borrar</ths>
+                                    <th scope="col">Borrar</th>
+                                    <th scope="col">Baneados</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -76,6 +77,7 @@
                                     <td><a type="button" onclick="showFormNew('<%= myRooms[i].id %>')"><i class="bi bi-pen text-primary"></i></a></td>
                                     <% } %>
                                     <td><a type="button" onclick="showWarning('<%= myRooms[i].id %>', '<%= myRooms[i].pw %>')"><i class="bi bi-trash"></i></a></td>
+                                    <td><a href="/?banlist=<%= myRooms[i].id %>"><i class="bi bi-person-x text-primary"></i></a></td>
                                     <td><a href="/room?id=<%= myRooms[i].id%>&password=<%= myRooms[i].pw %>"><i class="bi bi-box-arrow-in-right"></i></a></td>
                                 </tr>
                                 <% } %>
@@ -449,6 +451,60 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar el nombre de la sala</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="banList">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-list"></i> Lista de usuarios baneados</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <% if (!list) {%>
+                        No hay usuarios baneados
+                    <% } else { %>
+                        <table class="table table-hover table-responsive text-center">
+                            <thead class="table-info">
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <% if (imAdmin) { %>
+                                    <th scope="col">Remover baneo</th>
+                                    <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <% for (let i in bans) { %>
+                                        <th scope="row"><%= bans[i] %></th>
+                                        <% if (imAdmin) { %>
+                                            <td><a href="/?delBan=<%= bans[i] %>&id=<%= room %>"><i class="bi bi-x-lg"></i></a></td>    
+                                        <% } %>
+                                    <% } %>    
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    <% }%>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="unban">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-check-lg text-success"></i> Desbaneaste al usuario correctamente</h5>
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
             </div>

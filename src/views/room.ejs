@@ -110,9 +110,13 @@
                 </div>
     
                 <div class="d-sm-none d-md-block col-md-3 col-lg-3" id="chat_container">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
                         <h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
-                        <button type="button" class="btn" onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i class="bi bi-person-fill text-white"></i> <span id="usersOnline" class="text-success"> <%= room.users %> </span></button>
+
+                        <div class="align-items-center">
+                            <button type="button" class="btn"><i class="bi bi-clock-history text-white"></i></button>
+                            <button type="button" class="btn" onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i class="bi bi-person-fill text-white"></i> <span id="usersOnline" class="text-success"> <%= room.users %> </span></button>
+                        </div>
                     </div>
                     <div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2" id="messages" style="height: 75vh;">
                         <!-- <div class="userJoin text-secondary w-100">
@@ -136,9 +140,13 @@
 
             <div class="row d-block d-md-none mb-2" id="chat_mobile">
                 <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
                         <h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
-                        <button type="button" class="btn" onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i class="bi bi-person-fill text-white"></i> <span id="usersOnlineMobile" class="text-success"> <%= room.users %> </span></button>
+
+                        <div class="align-items-center">
+                            <button type="button" class="btn"><i class="bi bi-clock-history text-white"></i></button>
+                            <button type="button" class="btn" onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i class="bi bi-person-fill text-white"></i> <span id="usersOnlineMobile" class="text-success"> <%= room.users %> </span></button>
+                        </div>
                     </div>
                     <div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2" id="messagesMobile" style="height: 75vh;">
 
@@ -155,14 +163,28 @@
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
+            <div class="toast-header bg-danger text-white">
                 <i class="bi bi-exclamation-triangle"></i>
-                <strong class="me-auto">Error al conectar con el servidor</strong>
+                <strong class="me-auto"> Error al conectar con el servidor</strong>
                 <button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="Cerrar"></button>
             </div>
 
             <div class="toast-body">
                 La pagina se recargara al conectar.
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="youAreAdmin" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-primary text-white">
+                <i class="bi bi-star"></i>
+                <strong class="me-auto"> Eres el nuevo administrador de la sala!</strong>
+                <button class="btn-close" type="button" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="toast-body">
+                Recarga la pagina para ver tus nuevas opciones!
             </div>
         </div>
     </div>
@@ -219,9 +241,11 @@
                         <thead class="table-info">
                             <tr>
                                 <th scope="col">Nombre</th>
+                                <% if (user.admin) { %>
                                 <th scope="col">Expulsar</th>
                                 <th scope="col">Banear</th>
                                 <th scope="col">Transferir admin</th>
+                                <% } %>
                             </tr>
                         </thead>
 

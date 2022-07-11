@@ -15,7 +15,7 @@ import { fileURLToPath } from 'url';
 import { session_sequelize } from './db/session.js';
 import { getVideo, getVideoAndAudio } from './ytdl-functions.js';
 import { addOnlineM, addUserToRoom, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getMyRooms, getUsers, nextV, playingVideo, previousV, removeOnlineM, removeUserFromRoom, stopV, updateStatus, updateTime } from './rooms_functions.js';
-import { getSocket, setSocket } from './users_functions.js';
+import { getSocket, getUserFromSocket, setSocket, banUser, checkBan, transferAdm, getRoomsBans, delBan } from './users_functions.js';
 
 const sequelizeS = SequelizeStore(session.Store);
 
@@ -51,15 +51,6 @@ const DbInit = async () => {
 
 DbInit();
 
-sessionDB.get('l3f4rDPqqs-HHHMBCbTRQw1yti4WAVOM', async (err, session) => {
-    if (err) return err;
-
-    console.log(session.username);
-});
-
-
-export { sessionDB };
-
 app.get('/', async (req, res) => {
 
     let publicR = await getAllRooms();
@@ -89,9 +80,22 @@ app.get('/', async (req, res) => {
 
         if (req.session.room && req.session.room != 0) return res.redirect(`/room?id=${req.session.room}&password=${req.session.roomPw}`);
 
+        if (req.query.delBan) {
+            if (await getAdmin(req.query.id, req.session.username)) {
+                delBan(req.query.delBan, req.query.id);
+                return res.redirect('/?bansucessful=1');
+            }
+        }
+
+        if (req.query.banlist) {
+            if (await getAdmin(req.query.banlist, req.session.username)) {
+                return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms, list: true, bans: await getRoomsBans(req.query.banlist), imAdmin: true, room: req.query.banlist });
+            } else return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms, list: true, bans: await getRoomsBans(req.query.banlist), imAdmin: false });
+        }
+
         if (iHaveRooms) {
-            return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms });
-        } else return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false, });
+            return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms, list: false });
+        } else return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false, list: false });
     }
 
     if (req.query.username) {
@@ -114,9 +118,9 @@ app.get('/', async (req, res) => {
 
             req.session.username = req.query.username;
 
-            if (iHaveRooms) return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms });
+            if (iHaveRooms) return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms, list: false });
 
-            res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false });
+            res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false, list: false });
         }); 
     } else res.sendFile(`${__dirname}/public/login.html`);
 
@@ -170,27 +174,34 @@ app.get('/room', (req, res) => {
     if (req.query.exit) {
         req.session.room = 0;
         req.session.roomPw = null;
+        if (req.query.kicked) return res.redirect('/?err=kicked');
+        if (req.query.banned) return res.redirect('/?err=banned');
+        return res.redirect('/');
     }
 
     if (!req.query.name && !req.query.id) return res.redirect('/');
 
     if (req.query.id) {
-        searchRoom(null, req.query.password, req.query.id, (correctPw, name, online) => {
+        searchRoom(null, req.query.password, req.query.id, async (correctPw, name, online) => {
             if (!correctPw) {
                 return res.redirect(`/?id=${req.query.id}&err=1`);
             } 
+
+            if (await checkBan(req.session.username, req.query.id)) {
+                return res.redirect('/?err=banned');
+            }
             
             req.session.room = req.query.id;
             req.session.roomPw = req.query.password;
 
             if (!req.query.video) {
-                playingVideo(req.query.id, (roomFounded, video_id, time, status, title) => {
+                playingVideo(req.query.id, async (roomFounded, video_id, time, status, title) => {
                     if (!roomFounded) return;
-                    if (!video_id) return res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username } });
+                    if (!video_id) return res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username, admin: await getAdmin(req.query.id, req.session.username) } });
     
                     res.redirect(`/room?id=${req.query.id}&password=${req.query.password}&video=${video_id}&current=${time}&status=${status}&title=${title}`);
                 });
-            } else res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username } });
+            } else res.render('room.ejs', { room: { id: req.query.id, name: name, pw: req.query.password, users: online }, user: { user: req.session.username, admin: await getAdmin(req.query.id, req.session.username) } });
         });
     }
 });
@@ -200,8 +211,6 @@ const wrap = middleware => (socket, next) => middleware(socket.request, {}, next
 io.use(wrap(uSession));
 
 io.use(async (socket, next) => {
-
-    console.log(socket.request.session);
 
     let sessionSocket = await getSocket(socket.request.session.username);
 
@@ -228,6 +237,8 @@ io.on('connection', async (socket) => {
             console.log(`${data.user} ya tiene su propia ID`);
         } else setSocket(data.user, socket.id);
 
+        if (await getAdmin(data.room, data.user)) socket.emit('admin', true);
+
         addUserToRoom(data.room, data.user);
 
         let users = await getUsers(data.room);
@@ -236,6 +247,38 @@ io.on('connection', async (socket) => {
             socket.emit('addUsers', users); 
         }, 3000);
         
+    });
+
+    socket.on('kick', async data => {
+        if (!data.user) return;
+
+        let kicked = await getSocket(data.user);
+
+        if (await getAdmin(id, user)) {
+            io.in(id).emit('kicked', { id: kicked, username: data.user });
+        } else return;
+    });
+
+    socket.on('ban', async data => {
+        if (!data.user) return;
+
+        let banned = await getSocket(data.user);
+
+        if (await getAdmin(id, user)) {
+            io.in(id).emit('banned', { id: banned, username: data.user });
+            banUser(data.user, id);
+        } else return;
+    });
+
+    socket.on('newAdmin', async data => {
+        if (!data.user) return;
+
+        let newAdm = await getSocket(data.user);
+
+        if (await getAdmin(id, user)) {
+            io.in(id).emit('newAdmin', { id: newAdm, username: data.user });
+            transferAdm(data.user, id);
+        } else return;
     });
 
     socket.on('msg', (data) => {

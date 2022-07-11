@@ -37,6 +37,14 @@ if (window.location.search) {
     const data = new URLSearchParams(window.location.search);
     let id = data.get('id');
 
+    if (data.get('bansucessful')) {
+        new bootstrap.Modal(document.getElementById('unban')).show();
+    }
+
+    if (data.get('banlist')) {
+        new bootstrap.Modal(document.getElementById('banList')).show();
+    }
+
     if (data.get('err')) {
         
         switch (data.get('err')) {
@@ -47,6 +55,18 @@ if (window.location.search) {
                 showIdTab();
                 showId();
                 roomId.value = id;
+                modal.show();
+                break;
+
+            case "kicked":
+                errTitle.innerHTML = 'Fuiste expulsado de la sala';
+                errText.innerHTML = 'Puedes entrar nuevamente pero pueden expulsarte o banearte de la sala!';
+                modal.show();
+                break;
+
+            case "banned":
+                errTitle.innerHTML = 'Fuiste baneado de la sala';
+                errText.innerHTML = 'No podras entrar nuevamente a la sala!';
                 modal.show();
                 break;
         }

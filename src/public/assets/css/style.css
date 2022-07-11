@@ -79,6 +79,18 @@ p {
     color: #c60
 }
 
+.kicked {
+    color: #c00;
+}
+
+.banned {
+    color: #f00;
+}
+
+.newAdm {
+    color: #faf;
+}
+
 .self {
     font-weight: bold;
     color: #0cf;

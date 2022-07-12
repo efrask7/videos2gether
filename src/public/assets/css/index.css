@@ -1,32 +1,21 @@
 body {
     display: grid;
-    grid-template-areas: 
-        "header"
-        "main"
-        "footer";
-    grid-template-rows: 60px 1fr 120px;
-    height: 100vh;
-}
-
-header {
-    grid-area: header;
-}
-
-main {
-    grid-area: main;
-}
-
-footer {
-    grid-area: footer;
-}
-
-main > .container {
-    display: grid;
     place-content: center;
-    height: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, rgba(255,255,255,1) 5%, rgb(23, 120, 142) 95%);
 }
 
 .form {
     width: 30rem;
     height: 20rem;
+}
+
+.bg {
+    background: rgba(33, 37, 41, .8);
+}
+
+@media (min-width: 0) and (max-width: 576px) { /*(breakpoint - xs)*/
+    .form {
+        width: 25rem;
+    }
 }

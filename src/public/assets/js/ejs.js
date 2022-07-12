@@ -3,6 +3,7 @@ const showName = () => {
     document.getElementById('divId').classList.add('d-none');
     document.getElementById('btnName').disabled = true;
     document.getElementById('btnId').disabled = false;
+    document.getElementById('roomPassword').disabled = true;
 
     document.getElementById('roomId').required = false;
     document.getElementById('roomName').required = true;
@@ -13,6 +14,7 @@ const showId = () => {
     document.getElementById('divName').classList.add('d-none');
     document.getElementById('btnId').disabled = true;
     document.getElementById('btnName').disabled = false;
+    document.getElementById('roomPassword').disabled = false;
 
     document.getElementById('roomName').required = false;
     document.getElementById('roomId').required = true;
@@ -51,7 +53,7 @@ if (window.location.search) {
 
             case "1":
                 errTitle.innerHTML = `Error al entrar a la sala ${id}`;
-                errText.innerHTML = 'La contraseña es incorrecta';
+                errText.innerHTML = 'La contraseña es incorrecta o la sala no existe';
                 showIdTab();
                 showId();
                 roomId.value = id;
@@ -124,6 +126,12 @@ const showWarning = (id, password) => {
 
 const deleteRoom = () => {
     window.location = `/?deleteR=1&id=${idToDelete}&password=${pwToDelete}`;
+}
+
+const showFormS = (id) => {
+    document.getElementById('roomIdM').value = id;
+
+    new bootstrap.Modal(document.getElementById('join')).show();
 }
 
 window.history.pushState(null, null, `${window.location.pathname}`);

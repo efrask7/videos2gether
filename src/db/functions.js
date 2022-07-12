@@ -1,6 +1,8 @@
 import { users } from "./users.js";
 import { rooms } from "./rooms.js";
+import { Op } from "sequelize";
 
+//FUNCIONES PARA AGREGAR DATOS DE USUARIO O UNA SALA
 
 //USERS
 
@@ -29,11 +31,6 @@ const searchUser = async (user, pass, callback) => {
 
 //ROOMS
 
-const getAllRooms = async () => {
-
-    const tag = await rooms.findAll();
-}
-
 const addRoom = async (name, creator, secret, pass, callback) => {
 
     try {
@@ -52,27 +49,34 @@ const addRoom = async (name, creator, secret, pass, callback) => {
 }
 
 const searchRoom = async (name, password, room, callback) => {
-    if (room) {
-        const tag = await rooms.findOne({ where: {id: room} });
-        if (!tag) return callback(false);
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return callback(false);
 
-        if (tag.get('private') == 1) {
-            if (tag.get('password') != password) return callback(false); //regresa que la contra no es la misma
+    if (tag.get('private') == 1) {
+        if (tag.get('password') != password) return callback(false); //regresa que la contra no es la misma
 
-            return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq pos la contra estaba bien
-        } else {
-            return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq no tiene contra
-        }
-
+        return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq pos la contra estaba bien
     } else {
-
-        const tag = await rooms.findAll({ where: { name: name } });
-
-        return callback(); //regresa tooooodas las salas con el mismo nombre :D
+        return callback(true, tag.get('name'), tag.get('online')); //regresa la sala pq no tiene contra
     }
 
 }
 
+const searchRoomByName = async (name) => {
+    const tags = await rooms.findAll({ where: { name: {[Op.substring]: name} } });
+    if (!tags[0]) return false;
+
+    let roomList = [];
+
+    for (let i in tags) {
+        if (tags[i].password != null) {
+            roomList[i] = { name: tags[i].name, id: tags[i].id, admin: tags[i].admin, hasPw: true, online: tags[i].online };
+        } else roomList[i] = { name: tags[i].name, id: tags[i].id, admin: tags[i].admin, hasPw: false, online: tags[i].online };
+    }
+
+    return roomList;
+}
 
 
-export { newUser, searchUser, addRoom, searchRoom };
+
+export { newUser, searchUser, addRoom, searchRoom, searchRoomByName };

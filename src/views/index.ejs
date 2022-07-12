@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Play²Gether</title>
+    <link rel="icon" href="assets/img/icon.webp">
     <link rel="stylesheet" href="assets/css/ejs.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
@@ -16,7 +17,7 @@
             <nav class="navbar navbar-dark">
                 <div class="container d-flex">
                     <a href="/" class="navbar-brand display-1">
-                        Inicio
+                        <i class="bi bi-play-btn text-warning"></i> Play<span class="text-warning">²</span>Gether
                     </a>
 
                     <% if (user.found && !user.error && user.method == 'get') { %>
@@ -42,7 +43,7 @@
 
     <main>
         <div class="container-fluid row">
-            <div class="col-4 mt-2 offset-1">
+            <div class="col-12 col-sm-10 col-lg-5 mt-2 offset-sm-1">
 
                 <% if (iHaveR) {%>
                     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
@@ -135,7 +136,7 @@
                 </div> -->
 
 
-                <h1 class="display-4">Crea o unete a una sala</h1>
+                <h1 class="display-6">Crea o unete a una sala</h1>
 
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -145,7 +146,7 @@
                     </div>
                 </nav>
 
-                <div class="tab-content" id="nav-tabContent">
+                <div class="tab-content border border-dark rounded-2 p-2" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab" tabindex="0">
                         
                         <form action="/room" method="post">
@@ -186,14 +187,14 @@
                             <div class="row mt-4 d-none" id="divId">
                                 <label for="roomId" class="col-3">ID de sala:</label>
                                 <div class="col-9">
-                                    <input type="number" id="roomId" name="id" class="form-control" required>
+                                    <input type="number" id="roomId" name="id" class="form-control">
                                 </div>
                             </div>
     
                             <div class="row mt-2">
                                 <label for="roomPassword" class="col-3">Contraseña:</label>
                                 <div class="col-9">
-                                    <input type="password" id="roomPassword" name="password" class="form-control" placeholder="Puedes dejarlo vacio">
+                                    <input type="password" id="roomPassword" name="password" class="form-control" placeholder="Puedes dejarlo vacio" disabled>
                                 </div>
                             </div>
     
@@ -203,10 +204,29 @@
                 </div>
             </div>
 
-            <div class="col-4 offset-2 mt-2">
-                <h6 class="display-5 fs-4">Lista de salas publicas</h6>
+            <div class="d-none d-lg-block col-lg-4 offset-2 mt-2">
+                <h6 class="display-5 fs-4"><i class="bi bi-list"></i> Salas publicas</h6>
 
-                <div class="list-group col-6">
+                <div class="list-group col-10">
+
+                <% for (let i in rooms) {%>
+                    <a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
+                        <%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i> <%= rooms[i].online%>
+                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
+                    </a>
+
+                <%}%>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="col-10 mt-2 offset-1 row d-block d-lg-none">
+                <h6 class="display-5 fs-2"><i class="bi bi-"></i> Salas publicas</h6>
+
+                <div class="list-group">
 
                 <% for (let i in rooms) {%>
                     <a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
@@ -506,6 +526,85 @@
                 <div class="modal-header">
                     <h5 class="modal-title"><i class="bi bi-check-lg text-success"></i> Desbaneaste al usuario correctamente</h5>
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (search) { %>
+        <div class="modal" id="search">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <div class="modal-title">Resultados para: <%= search %></div>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+    
+                    <div class="modal-body d-flex flex-wrap justify-content-around">
+                        <% if (foundR) { %>
+                            <% for (let i in foundR) { %>
+                                <div class="card text-center border-dark me-1 mt-1" style="width: 13rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= foundR[i].name %> 
+                                            <% if (foundR[i].hasPw) { %>
+                                                <i class="bi bi-lock text-danger"></i>
+                                            <% } else { %>
+                                                <i class="bi bi-unlock text-success"></i>
+                                            <% } %>
+                                        </h5>
+                                        <p class="card-text">
+                                            ID: <%= foundR[i].id %>
+                                            <br>
+                                            <i class="bi bi-person text-success"></i> <%= foundR[i].online %>
+                                        </p>
+            
+                                        <% if (foundR[i].hasPw) { %>
+                                            <button class="btn btn-outline-primary" type="button" onclick="showFormS('<%= foundR[i].id %>')">Entrar <i class="bi bi-box-arrow-in-right"></i></button>
+                                        <% } else { %>
+                                            <a href="/room?id=<%= foundR[i].id %>" class="btn btn-outline-primary">Entrar <i class="bi bi-box-arrow-in-right"></i></a>
+                                        <% } %>
+                                        
+                                    </div>
+            
+                                    <div class="card-footer text-muted">
+                                        <%= foundR[i].admin %>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                            No se encontraron salas
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            window.onload = () => new bootstrap.Modal(document.getElementById('search')).show();    
+        </script>
+    <% } %>
+
+    <div class="modal" id="join">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form action="/room" method="get">
+    
+                        <div class="row">
+                            <label for="roomIdM" class="col-3">ID de sala:</label>
+                            <div class="col-9">
+                                <input type="number" id="roomIdM" name="id" class="form-control" required disabled>
+                            </div>
+                        </div>
+    
+                        <div class="row mt-2">
+                            <label for="roomPasswordM" class="col-3">Contraseña:</label>
+                            <div class="col-9">
+                                <input type="password" id="roomPasswordM" name="password" class="form-control" placeholder="Puedes dejarlo vacio" required>
+                            </div>
+                        </div>
+    
+                        <button class="btn btn-primary" type="submit">Unirse</button>
                 </div>
             </div>
         </div>

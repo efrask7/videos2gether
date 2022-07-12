@@ -1,6 +1,15 @@
 import { rooms } from './db/rooms.js';
 import { Op } from 'sequelize';
 
+/*FUNCIONES PARA LAS SALAS
+EJ: buscar un nuevo id para cuando se manda un nuevo video
+basicamente son funciones para actualizar datos de la base de datos de 'rooms'
+
+son muchas pero creo que con el nombre y los parametros es entendible que hacen
+*/
+
+
+
 const newValue = (name) => {
     return {
         name: name
@@ -260,6 +269,22 @@ const restartOnlineUsers = async () => {
     await rooms.update({ online: 0 }, { where: {online: { [Op.gt]: 0 }}});
 }
 
-restartOnlineUsers();
+const getHistory = async room => {
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return;
 
-export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom };
+    let history = JSON.parse(tag.get('videos'));
+
+    if (!history) return false;
+
+    let name = [];
+
+    for (let i in history) {
+        name.push(history[i].name);
+    }
+
+    return name;
+}
+
+
+export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom, getHistory, restartOnlineUsers };

@@ -66,6 +66,10 @@ p {
     overflow: hidden;
 }
 
+#messagesMobile {
+    overflow: hidden;
+}
+
 .username {
     font-weight: bold;
     color: #5f0;
@@ -124,7 +128,7 @@ p {
     }
 
     #video_player {
-        height: 25rem;
+        height: 15rem;
     }
     #chat_container {
         display: none;
@@ -151,11 +155,11 @@ p {
 }
   
 @media (min-width: 768px) and (max-width: 992px) { /*(breakpoint - md)*/
-    #chat_container {
-        
-    }
     .time {
         display: none;
+    }
+    #video_player {
+        height: 23rem;
     }
 }
   

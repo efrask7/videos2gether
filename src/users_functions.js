@@ -1,6 +1,11 @@
 import { rooms } from './db/rooms.js';
 import { users } from './db/users.js';
 
+/* FUNCIONES QUE PIDAN DATOS DEL USUARIO
+ej: para transferir el administrador a otro usuario o actualizar el socket.id
+
+*/
+
 const setSocket = async (user, id) => {
     const tag = await users.findOne({ where: {username: user} });
     if (!tag) return;

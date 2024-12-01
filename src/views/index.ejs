@@ -1,102 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Videos²Gether</title>
-    <link rel="icon" href="/assets/img/icon.webp">
-    <link rel="stylesheet" href="/assets/css/ejs.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Videos²Gether</title>
+	<link rel="icon" href="/assets/img/icon.webp">
+	<link rel="stylesheet" href="/assets/css/ejs.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 </head>
+
 <body>
 
-    <header class="bg-dark">
-        <div class="container">
-            <nav class="navbar navbar-dark">
-                <div class="container d-flex">
-                    <a href="/" class="navbar-brand display-1">
-                        <i class="bi bi-play-btn text-warning"></i> Play<span class="text-warning">²</span>Gether
-                    </a>
+	<header class="h-100 pb-0">
+		<div class="container h-100">
+			<nav class="navbar navbar-dark h-100">
+				<div class="container d-flex">
+					<a href="/" class="navbar-brand display-1">
+						<i class="bi bi-play-btn text-warning"></i> Videos<span class="text-warning">²</span>Gether
+					</a>
 
-                    <% if (user.found && !user.error && user.method == 'get') { %>
-                    <div class="user text-white d-flex align-items-center">
-                        <div class="fs-4">
-                            <%= user.user%> <i class="bi bi-person-circle"></i>
-                        </div>
-                        <div class="dropdown ms-2">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+					<% if (user.found && !user.error && user.method=='get' ) { %>
+							<div class="dropdown">
+								<a 
+									class="dropdown-toggle text-decoration-none user fs-4 gap-2 text-white d-flex align-items-center" 
+									href="#" 
+									role="button" 
+									id="dropdownMenuLink" 
+									data-bs-toggle="dropdown"
+									aria-expanded="false"
+								>
+									<span>
+										<%= user.user%> <i class="bi bi-person-circle"></i>
+									</span>
+								</a>
 
-                            </a>
-                          
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                              <li><a class="dropdown-item" href="/?delete=1">Cerrar sesion</a></li>
-                            </ul>
-                          </div>
-                    </div>
-                    <% } %>
-                </div>
-            </nav>
-        </div>
-    </header>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+									<li><a class="dropdown-item" href="/?delete=1">Cerrar sesion</a></li>
+								</ul>
+							</div>
+						</div>
+						<% } %>
+				</div>
+			</nav>
+		</div>
+	</header>
 
-    <main>
-        <div class="container-fluid row">
-            <div class="col-12 col-sm-10 col-lg-5 mt-2 offset-sm-1">
+	<main>
+		<div class="container-fluid row">
+			<div class="col-12 col-sm-10 col-lg-5 mt-2 offset-sm-1">
 
-                <% if (iHaveR) {%>
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
-                        <i class="bi bi-list"></i> Mis salas
-                    </button>
-                    <div class="collapse" id="myRooms">
-                        <table class="table table-hover table-responsive table-bordered text-center mt-2">
-                            <thead class="table-info">
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Nombre</th>
-                                    <th scope="col"><i class="bi bi-person-fill"></i></th>
-                                    <th scope="col"><i class="bi bi-shield-lock"></i></th>
-                                    <th scope="col">Contraseña</th>
-                                    <th scope="col">Borrar</th>
-                                    <th scope="col">Baneados</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for (let i in myRooms) {%>
-                                <tr>
-                                    <th scope="row"><%= myRooms[i].id %></th>
-                                    <td><%= myRooms[i].name %> <a type="button" onclick="showFormChN('<%= myRooms[i].id %>')"><i class="bi bi-pencil-square text-primary"></i></a></td>
-                                    <td><%= myRooms[i].online %></td>
-                                    
-                                    <%if (myRooms[i].private) {%>
-                                    <td><i class="bi bi-lock-fill text-danger"></i></td>
-                                    <td><a type="button" onclick="showFormCh('<%= myRooms[i].id %>')"><i class="bi bi-pencil-square text-primary"></i></a> - <a type="button" onclick="showPw('<%= myRooms[i].pw %>')"><i class="bi bi-eye text-primary"></i></a></td>
-                                    <% } else { %>
-                                    <td><i class="bi bi-unlock-fill text-success"></i></td>
-                                    <td><a type="button" onclick="showFormNew('<%= myRooms[i].id %>')"><i class="bi bi-pen text-primary"></i></a></td>
-                                    <% } %>
-                                    <td><a type="button" onclick="showWarning('<%= myRooms[i].id %>', '<%= myRooms[i].pw %>')"><i class="bi bi-trash"></i></a></td>
-                                    <td><a href="/?banlist=<%= myRooms[i].id %>"><i class="bi bi-person-x text-primary"></i></a></td>
-                                    <td><a href="/room?id=<%= myRooms[i].id%>&password=<%= myRooms[i].pw %>"><i class="bi bi-box-arrow-in-right"></i></a></td>
-                                </tr>
-                                <% } %>
-                                <!-- <tr>
-                                    <th scope="row">12</th>
-                                    <td>Sala pront</td>
-                                    <td><i class="bi bi-lock-fill text-danger"></i></td>
-                                    <td>2</td>
-                                    <td><a href="#"><i class="bi bi-pen"></i></a></td>
-                                    <td><a href="#"><i class="bi bi-trash"></i></a></td>
-                                    <td><a href="#"><i class="bi bi-box-arrow-in-right"></i></a></td>
-                                </tr> -->
-                            </tbody>
-                        </table>
-                    </div>
-                <% } %>
+				<% if (iHaveR) {%>
+					<button class="btn btn-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms"
+						aria-expanded="false" aria-controls="myRooms">
+						<i class="bi bi-list"></i> Ver mis salas
+					</button>
+					<div class="collapse show py-2" id="myRooms">
+						<div class="d-flex flex-column gap-3">
+						<% for (let i in myRooms) {%>
+								<div class="bg-card d-flex flex-column gap-1 rounded-2 w-100 py-2 px-4">
+									<div class="d-flex justify-content-between">
+										<p class="p-0 m-0 d-flex align-items-center gap-1">
+											<%= myRooms[i].id %> - <%= myRooms[i].name %>
+											
+											<button 
+													type="button" 
+													onclick="showFormChN('<%= myRooms[i].id %>')"
+													class="btn btn-link p-0"
+													title="Cambiar nombre"
+												>
+													<i class="bi bi-pencil-fill text-primary"></i>
+											</button>
+										</p>
 
-                <!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
+										<% if (myRooms[i].private) {%>
+											<div class="d-flex align-items-center gap-1">
+												<button 
+													class="btn btn-link p-0"
+													onclick="showPw('<%= myRooms[i].pw %>')"
+													title="Ver contraseña"
+												>
+													<i class="bi bi-eye-fill text-primary"></i>
+												</button>
+
+												<button 
+													type="button" 
+													onclick="showFormCh('<%= myRooms[i].id %>')"
+													class="btn btn-link p-0"
+													title="Cambiar contraseña"
+												>
+													<i class="bi bi-pencil-fill text-primary"></i>
+											</button>
+
+												<p class="p-0 m-0 text-danger"><i class="bi bi-lock-fill"></i> Privada</p>
+											</div>
+
+										<%} else { %>
+											<div class="d-flex align-items-center gap-1">
+												<button 
+												type="button" 
+												onclick="showFormCh('<%= myRooms[i].id %>')"
+												class="btn btn-link p-0"
+												title="Cambiar contraseña"
+											>
+												<i class="bi bi-pencil-fill text-primary"></i>
+										</button>
+
+												<p class="p-0 m-0 text-success"><i class="bi bi-unlock-fill"></i> Publica</p>
+											</div>
+										<% } %>
+
+									</div>
+
+									<div class="d-flex justify-content-between align-items-center">
+										<p class="m-0 fs-6">
+											Conectados: 
+											<span class="badge bg-secondary"><%= myRooms[i].online %></span>
+										</p>
+									
+										<a 
+										href="/?banlist=<%= myRooms[i].id %>"
+											onclick="showFormCh('<%= myRooms[i].id %>')"
+											class="text-danger text-decoration-none p-0"
+											title="Ver lista de baneados"
+										>
+											Ver baneados
+										</a>
+									</div>
+
+									<div class="d-flex justify-content-between align-items-center">
+										<a 
+											href="/room?id=<%= myRooms[i].id%>&password=<%= myRooms[i].pw %>"
+											class="text-decoration-none d-flex align-items-center gap-2"
+										>
+											<i class="bi bi-box-arrow-in-right"></i>
+											Entrar
+										</a>
+
+										<a 
+											type="button" 
+											class="text-secondary text-decoration-none"
+											onclick="showWarning('<%= myRooms[i].id %>', '<%= myRooms[i].pw %>')"
+										>
+											<i class="bi bi-trash"></i>
+											Eliminar
+										</a>
+									</div>
+								</div>
+							<% } %>
+						</div>
+					</div>
+					<% } %>
+
+						<!-- <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#myRooms" aria-expanded="false" aria-controls="myRooms">
                     Mis salas
                 </button>
                 <div class="collapse" id="myRooms">
@@ -136,481 +194,502 @@
                 </div> -->
 
 
-                <h1 class="display-6">Crea o unete a una sala</h1>
+						<h1 class="display-6">Crea o unete a una sala</h1>
 
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create" type="button" role="tab" aria-controls="nav-create" aria-selected="true">Crear</button>
+						<nav>
+							<div class="nav nav-tabs" id="nav-tab" role="tablist">
+								<button class="nav-link active" id="nav-create-tab" data-bs-toggle="tab" data-bs-target="#nav-create"
+									type="button" role="tab" aria-controls="nav-create" aria-selected="true">Crear</button>
 
-                        <button class="nav-link" id="nav-join-tab" data-bs-toggle="tab" data-bs-target="#nav-join" type="button" role="tab" aria-controls="nav-join" aria-selected="false">Unirse</button>
-                    </div>
-                </nav>
+								<button class="nav-link" id="nav-join-tab" data-bs-toggle="tab" data-bs-target="#nav-join" type="button"
+									role="tab" aria-controls="nav-join" aria-selected="false">Unirse</button>
+							</div>
+						</nav>
 
-                <div class="tab-content border border-dark rounded-2 p-2" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab" tabindex="0">
-                        
-                        <form action="/room" method="post">
-                            <div class="row mt-4">
-                                <label for="newRoomName" class="col-3">Nombre de sala:</label>
-                                <div class="col-9">
-                                    <input type="text" id="newRoomName" name="name" class="form-control" required>
-                                </div>
-                            </div>
-    
-                            <div class="row mt-2">
-                                <label for="newRoomPassword" class="col-3">Contraseña:</label>
-                                <div class="col-9">
-                                    <input type="password" id="newRoomPassword" name="password" class="form-control" placeholder="Puedes dejarlo vacio">
-                                </div>
-                            </div>
-    
-                            <button class="btn btn-primary" type="submit">Crear</button>
-                        </form>
-                    </div>
+						<div class="tab-content border border-dark rounded-2 p-2" id="nav-tabContent">
+							<div class="tab-pane fade show active" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab"
+								tabindex="0">
 
-                    <div class="tab-pane fade" id="nav-join" role="tabpanel" aria-labelledby="nav-join-tab" tabindex="0">
-                        
-                        <form action="/room" method="get">
+								<form action="/room" method="post">
+									<div class="row mt-4">
+										<label for="newRoomName" class="col-3">Nombre de sala:</label>
+										<div class="col-9">
+											<input type="text" id="newRoomName" name="name" class="form-control" required>
+										</div>
+									</div>
 
-                            <div class="mt-2">
-                                <button type="button" class="btn btn-link" id="btnName" disabled onclick="showName()">Nombre</button>
-                                <button type="button" class="btn btn-link" id="btnId" onclick="showId()">ID</button>
-                            </div>
+									<div class="row mt-2">
+										<label for="newRoomPassword" class="col-3">Contraseña:</label>
+										<div class="col-9">
+											<input type="password" id="newRoomPassword" name="password" class="form-control"
+												placeholder="Puedes dejarlo vacio">
+										</div>
+									</div>
 
-                            <div class="row mt-4" id="divName">
-                                <label for="roomName" class="col-3">Nombre de sala:</label>
-                                <div class="col-9">
-                                    <input type="text" id="roomName" name="name" class="form-control" required>
-                                </div>
-                            </div>
+									<button class="btn btn-primary" type="submit">Crear</button>
+								</form>
+							</div>
 
-                            <div class="row mt-4 d-none" id="divId">
-                                <label for="roomId" class="col-3">ID de sala:</label>
-                                <div class="col-9">
-                                    <input type="number" id="roomId" name="id" class="form-control">
-                                </div>
-                            </div>
-    
-                            <div class="row mt-2">
-                                <label for="roomPassword" class="col-3">Contraseña:</label>
-                                <div class="col-9">
-                                    <input type="password" id="roomPassword" name="password" class="form-control" placeholder="Puedes dejarlo vacio" disabled>
-                                </div>
-                            </div>
-    
-                            <button class="btn btn-primary" type="submit">Unirse</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+							<div class="tab-pane fade" id="nav-join" role="tabpanel" aria-labelledby="nav-join-tab" tabindex="0">
 
-            <div class="d-none d-lg-block col-lg-4 offset-2 mt-2">
-                <h6 class="display-5 fs-4"><i class="bi bi-list"></i> Salas publicas</h6>
+								<form action="/room" method="get">
 
-                <div class="list-group col-10">
+									<div class="mt-2">
+										<button type="button" class="btn btn-link" id="btnName" disabled
+											onclick="showName()">Nombre</button>
+										<button type="button" class="btn btn-link" id="btnId" onclick="showId()">ID</button>
+									</div>
 
-                <% for (let i in rooms) {%>
-                    <a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
-                        <%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i> <%= rooms[i].online%>
-                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
-                    </a>
+									<div class="row mt-4" id="divName">
+										<label for="roomName" class="col-3">Nombre de sala:</label>
+										<div class="col-9">
+											<input type="text" id="roomName" name="name" class="form-control" required>
+										</div>
+									</div>
 
-                <%}%>
+									<div class="row mt-4 d-none" id="divId">
+										<label for="roomId" class="col-3">ID de sala:</label>
+										<div class="col-9">
+											<input type="number" id="roomId" name="id" class="form-control">
+										</div>
+									</div>
 
-                </div>
+									<div class="row mt-2">
+										<label for="roomPassword" class="col-3">Contraseña:</label>
+										<div class="col-9">
+											<input type="password" id="roomPassword" name="password" class="form-control"
+												placeholder="Puedes dejarlo vacio" disabled>
+										</div>
+									</div>
 
-            </div>
-        </div>
+									<button class="btn btn-primary" type="submit">Unirse</button>
+								</form>
+							</div>
+						</div>
+			</div>
 
-        <div class="container-fluid">
-            <div class="col-10 mt-2 offset-1 row d-block d-lg-none">
-                <h6 class="display-5 fs-2"><i class="bi bi-"></i> Salas publicas</h6>
+			<div class="d-none d-lg-block col-lg-4 offset-2 mt-2">
+				<h6 class="display-5 fs-4"><i class="bi bi-list"></i> Salas publicas</h6>
 
-                <div class="list-group">
+				<div class="list-group col-10">
 
-                <% for (let i in rooms) {%>
-                    <a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
-                        <%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i> <%= rooms[i].online%>
-                        <i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
-                    </a>
+					<% for (let i in rooms) {%>
+						<a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
+							<%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i>
+								<%= rooms[i].online%>
+									<i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
+						</a>
 
-                <%}%>
+						<%}%>
 
-                </div>
+				</div>
 
-            </div>
-        </div>
-    </main>
+			</div>
+		</div>
 
-    <div class="modal" id="modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="err-title"></h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+		<div class="container-fluid">
+			<div class="col-10 mt-2 offset-1 row d-block d-lg-none">
+				<h6 class="display-5 fs-2"><i class="bi bi-"></i> Salas publicas</h6>
 
-                <div class="modal-body" id="err-body">
-                    <p id="err-text"></p>
-                </div>
+				<div class="list-group">
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+					<% for (let i in rooms) {%>
+						<a href="/room?id=<%= rooms[i].id %>" class="list-group-item list-group-item-action d-flex">
+							<%= rooms[i].name %> <i class="bi bi-person ms-2 text-success"></i>
+								<%= rooms[i].online%>
+									<i class="bi bi-box-arrow-in-right ms-auto text-primary"></i>
+						</a>
 
-    <div class="modal" id="seePw" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Contraseña:</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-    
-                <div class="modal-body" id="pwText"></div>
-    
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+						<%}%>
 
-    <div class="modal" id="form-editPw" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar contraseña</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+				</div>
 
-                <div class="modal-body">
-                    <form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
-                        <div class="col-12">
-                            <label for="editId" class="visually-hidden">ID:</label>
-                            <div class="input-group">
-                                <div class="input-group-text">#</div>
-                                <input type="number" name="newId" id="editId" class="form-control" placeholder="ID:" readonly>
-                            </div>
-                        </div>
+			</div>
+		</div>
+	</main>
 
-                        <div class="col-12">
-                            <label for="editNewPw" class="visually-hidden">Nueva contraseña:</label>
-                            <div class="input-group">
-                                <div class="input-group-text"><i class="bi bi-key"></i></div>
-                                <input type="password" name="password" id="editNewPw" class="form-control" placeholder="Contraseña nueva:">
-                            </div>
-                        </div>
+	<div class="modal" id="modal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="err-title"></h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Cambiar</button>
-                        </div>
-                    </form>
-                </div>
+				<div class="modal-body" id="err-body">
+					<p id="err-text"></p>
+				</div>
 
-                <div class="modal-footer justify-content-start text-secondary">
-                    Deja vacio el campo de la contraseña para hacer la sala publica
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="form-newPw" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nueva contraseña para la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+	<div class="modal" id="seePw" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Contraseña:</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-                <div class="modal-body">
-                    <form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
-                        <div class="col-12">
-                            <label for="newId" class="visually-hidden">ID:</label>
-                            <div class="input-group">
-                                <div class="input-group-text">#</div>
-                                <input type="number" name="newId" id="newId" class="form-control" placeholder="ID:" readonly>
-                            </div>
-                        </div>
+				<div class="modal-body" id="pwText"></div>
 
-                        <div class="col-12">
-                            <label for="NewPw" class="visually-hidden">Nueva contraseña:</label>
-                            <div class="input-group">
-                                <div class="input-group-text"><i class="bi bi-key"></i></div>
-                                <input type="password" name="password" id="newPw" class="form-control" placeholder="Contraseña nueva:">
-                            </div>
-                        </div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Cambiar</button>
-                        </div>
-                    </form>
-                </div>
+	<div class="modal" id="form-editPw" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Editar contraseña</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-                <div class="modal-footer justify-content-start text-secondary">
-                    Deja vacio el campo de la contraseña para hacer la sala publica
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-body">
+					<form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+						<div class="col-12">
+							<label for="editId" class="visually-hidden">ID:</label>
+							<div class="input-group">
+								<div class="input-group-text">#</div>
+								<input type="number" name="newId" id="editId" class="form-control" placeholder="ID:" readonly>
+							</div>
+						</div>
 
-    <div class="modal" id="sure" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning"></i> ¿Estas segur@?</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+						<div class="col-12">
+							<label for="editNewPw" class="visually-hidden">Nueva contraseña:</label>
+							<div class="input-group">
+								<div class="input-group-text"><i class="bi bi-key"></i></div>
+								<input type="password" name="password" id="editNewPw" class="form-control"
+									placeholder="Contraseña nueva:">
+							</div>
+						</div>
 
-                <div class="modal-body">
-                    No puedes arrepentirte de borrar la sala
-                </div>
+						<div class="col-12">
+							<button class="btn btn-primary" type="submit">Cambiar</button>
+						</div>
+					</form>
+				</div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-success" type="button" onclick="deleteRoom()">Si</button>
-                    <button class="btn btn-danger" type="button" data-bs-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-footer justify-content-start text-secondary">
+					Deja vacio el campo de la contraseña para hacer la sala publica
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="trash">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Sala borrada!</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal" id="form-newPw" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Nueva contraseña para la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-    <div class="modal" id="trashErr">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo borrar la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-body">
+					<form action="/newPass" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+						<div class="col-12">
+							<label for="newId" class="visually-hidden">ID:</label>
+							<div class="input-group">
+								<div class="input-group-text">#</div>
+								<input type="number" name="newId" id="newId" class="form-control" placeholder="ID:" readonly>
+							</div>
+						</div>
 
-    <div class="modal" id="newPassword">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio la contraseña de la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="col-12">
+							<label for="NewPw" class="visually-hidden">Nueva contraseña:</label>
+							<div class="input-group">
+								<div class="input-group-text"><i class="bi bi-key"></i></div>
+								<input type="password" name="password" id="newPw" class="form-control" placeholder="Contraseña nueva:">
+							</div>
+						</div>
 
-    <div class="modal" id="newPasswordErr">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar la contraseña de la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="col-12">
+							<button class="btn btn-primary" type="submit">Cambiar</button>
+						</div>
+					</form>
+				</div>
 
-    <div class="modal" id="form-editName" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar nombre</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+				<div class="modal-footer justify-content-start text-secondary">
+					Deja vacio el campo de la contraseña para hacer la sala publica
+				</div>
+			</div>
+		</div>
+	</div>
 
-                <div class="modal-body">
-                    <form action="/newName" method="post" class="row row-cols-lg-auto g-3 align-items-center">
-                        <div class="col-12">
-                            <label for="newId" class="visually-hidden">ID:</label>
-                            <div class="input-group">
-                                <div class="input-group-text">#</div>
-                                <input type="number" name="newId" id="newIdN" class="form-control" placeholder="ID:" readonly>
-                            </div>
-                        </div>
+	<div class="modal" id="sure" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning"></i> ¿Estas segur@?</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-                        <div class="col-12">
-                            <label for="editNewName" class="visually-hidden">Nuevo nombre:</label>
-                            <div class="input-group">
-                                <div class="input-group-text"><i class="bi bi-cursor-text"></i></div>
-                                <input type="text" name="name" id="editNewName" class="form-control" placeholder="Nombre nuevo:">
-                            </div>
-                        </div>
+				<div class="modal-body">
+					No puedes arrepentirte de borrar la sala
+				</div>
 
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit">Cambiar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-footer">
+					<button class="btn btn-success" type="button" onclick="deleteRoom()">Si</button>
+					<button class="btn btn-danger" type="button" data-bs-dismiss="modal">No</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="newName">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio el nombre de la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal" id="trash">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Sala borrada!</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="newNameErr">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar el nombre de la sala</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal" id="trashErr">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo borrar la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="banList">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-list"></i> Lista de usuarios baneados</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
+	<div class="modal" id="newPassword">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio la contraseña de la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                <div class="modal-body">
-                    <% if (!list) {%>
-                        No hay usuarios baneados
-                    <% } else { %>
-                        <table class="table table-hover table-responsive text-center">
-                            <thead class="table-info">
-                                <tr>
-                                    <th scope="col">Nombre</th>
-                                    <% if (imAdmin) { %>
-                                    <th scope="col">Remover baneo</th>
-                                    <% } %>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <% for (let i in bans) { %>
-                                        <th scope="row"><%= bans[i] %></th>
-                                        <% if (imAdmin) { %>
-                                            <td><a href="/?delBan=<%= bans[i] %>&id=<%= room %>"><i class="bi bi-x-lg"></i></a></td>    
-                                        <% } %>
-                                    <% } %>    
+	<div class="modal" id="newPasswordErr">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar la
+						contraseña de la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-                                </tr>
-                            </tbody>
-                        </table>
-                    <% }%>
-                </div>
+	<div class="modal" id="form-editName" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Editar nombre</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="modal-body">
+					<form action="/newName" method="post" class="row row-cols-lg-auto g-3 align-items-center">
+						<div class="col-12">
+							<label for="newId" class="visually-hidden">ID:</label>
+							<div class="input-group">
+								<div class="input-group-text">#</div>
+								<input type="number" name="newId" id="newIdN" class="form-control" placeholder="ID:" readonly>
+							</div>
+						</div>
 
-    <div class="modal" id="unban">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-check-lg text-success"></i> Desbaneaste al usuario correctamente</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
+						<div class="col-12">
+							<label for="editNewName" class="visually-hidden">Nuevo nombre:</label>
+							<div class="input-group">
+								<div class="input-group-text"><i class="bi bi-cursor-text"></i></div>
+								<input type="text" name="name" id="editNewName" class="form-control" placeholder="Nombre nuevo:">
+							</div>
+						</div>
 
-    <% if (search) { %>
-        <div class="modal" id="search">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <div class="modal-title">Resultados para: <%= search %></div>
-                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-    
-                    <div class="modal-body d-flex flex-wrap justify-content-around">
-                        <% if (foundR) { %>
-                            <% for (let i in foundR) { %>
-                                <div class="card text-center border-dark me-1 mt-1" style="width: 13rem;">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><%= foundR[i].name %> 
-                                            <% if (foundR[i].hasPw) { %>
-                                                <i class="bi bi-lock text-danger"></i>
-                                            <% } else { %>
-                                                <i class="bi bi-unlock text-success"></i>
-                                            <% } %>
-                                        </h5>
-                                        <p class="card-text">
-                                            ID: <%= foundR[i].id %>
-                                            <br>
-                                            <i class="bi bi-person text-success"></i> <%= foundR[i].online %>
-                                        </p>
-            
-                                        <% if (foundR[i].hasPw) { %>
-                                            <button class="btn btn-outline-primary" type="button" onclick="showFormS('<%= foundR[i].id %>')">Entrar <i class="bi bi-box-arrow-in-right"></i></button>
-                                        <% } else { %>
-                                            <a href="/room?id=<%= foundR[i].id %>" class="btn btn-outline-primary">Entrar <i class="bi bi-box-arrow-in-right"></i></a>
-                                        <% } %>
-                                        
-                                    </div>
-            
-                                    <div class="card-footer text-muted">
-                                        <%= foundR[i].admin %>
-                                    </div>
-                                </div>
-                            <% } %>
-                        <% } else { %>
-                            No se encontraron salas
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
+						<div class="col-12">
+							<button class="btn btn-primary" type="submit">Cambiar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
-        <script>
-            window.onload = () => new bootstrap.Modal(document.getElementById('search')).show();    
-        </script>
-    <% } %>
+	<div class="modal" id="newName">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-check2 text-success"></i> Se cambio el nombre de la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <div class="modal" id="join">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form action="/room" method="get">
-    
-                        <div class="row">
-                            <label for="roomIdM" class="col-3">ID de sala:</label>
-                            <div class="col-9">
-                                <input type="number" id="roomIdM" name="id" class="form-control" required disabled>
-                            </div>
-                        </div>
-    
-                        <div class="row mt-2">
-                            <label for="roomPasswordM" class="col-3">Contraseña:</label>
-                            <div class="col-9">
-                                <input type="password" id="roomPasswordM" name="password" class="form-control" placeholder="Puedes dejarlo vacio" required>
-                            </div>
-                        </div>
-    
-                        <button class="btn btn-primary" type="submit">Unirse</button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal" id="newNameErr">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> No se pudo cambiar el nombre de
+						la sala</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/js/ejs.js"></script>
+	<div class="modal" id="banList">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-list"></i> Lista de usuarios baneados</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+
+				<div class="modal-body">
+					<% if (!list) {%>
+						No hay usuarios baneados
+						<% } else { %>
+							<table class="table table-hover table-responsive text-center">
+								<thead class="table-info">
+									<tr>
+										<th scope="col">Nombre</th>
+										<% if (imAdmin) { %>
+											<th scope="col">Remover baneo</th>
+											<% } %>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<% for (let i in bans) { %>
+											<th scope="row">
+												<%= bans[i] %>
+											</th>
+											<% if (imAdmin) { %>
+												<td><a href="/?delBan=<%= bans[i] %>&id=<%= room %>"><i class="bi bi-x-lg"></i></a></td>
+												<% } %>
+													<% } %>
+
+									</tr>
+								</tbody>
+							</table>
+							<% }%>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="unban">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title"><i class="bi bi-check-lg text-success"></i> Desbaneaste al usuario correctamente</h5>
+					<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<% if (search) { %>
+		<div class="modal" id="search">
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+				<div class="modal-content">
+					<div class="modal-header bg-primary text-white">
+						<div class="modal-title">Resultados para: <%= search %>
+						</div>
+						<button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+					</div>
+
+					<div class="modal-body d-flex flex-wrap justify-content-around">
+						<% if (foundR) { %>
+							<% for (let i in foundR) { %>
+								<div class="card text-center border-dark me-1 mt-1" style="width: 13rem;">
+									<div class="card-body">
+										<h5 class="card-title">
+											<%= foundR[i].name %>
+												<% if (foundR[i].hasPw) { %>
+													<i class="bi bi-lock text-danger"></i>
+													<% } else { %>
+														<i class="bi bi-unlock text-success"></i>
+														<% } %>
+										</h5>
+										<p class="card-text">
+											ID: <%= foundR[i].id %>
+												<br>
+												<i class="bi bi-person text-success"></i>
+												<%= foundR[i].online %>
+										</p>
+
+										<% if (foundR[i].hasPw) { %>
+											<button class="btn btn-outline-primary" type="button"
+												onclick="showFormS('<%= foundR[i].id %>')">Entrar <i
+													class="bi bi-box-arrow-in-right"></i></button>
+											<% } else { %>
+												<a href="/room?id=<%= foundR[i].id %>" class="btn btn-outline-primary">Entrar <i
+														class="bi bi-box-arrow-in-right"></i></a>
+												<% } %>
+
+									</div>
+
+									<div class="card-footer text-muted">
+										<%= foundR[i].admin %>
+									</div>
+								</div>
+								<% } %>
+									<% } else { %>
+										No se encontraron salas
+										<% } %>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			window.onload = () => new bootstrap.Modal(document.getElementById('search')).show();    
+		</script>
+		<% } %>
+
+			<div class="modal" id="join">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-body">
+							<form action="/room" method="get">
+
+								<div class="row">
+									<label for="roomIdM" class="col-3">ID de sala:</label>
+									<div class="col-9">
+										<input type="number" id="roomIdM" name="id" class="form-control" required disabled>
+									</div>
+								</div>
+
+								<div class="row mt-2">
+									<label for="roomPasswordM" class="col-3">Contraseña:</label>
+									<div class="col-9">
+										<input type="password" id="roomPasswordM" name="password" class="form-control"
+											placeholder="Puedes dejarlo vacio" required>
+									</div>
+								</div>
+
+								<button class="btn btn-primary" type="submit">Unirse</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+			<script src="/assets/js/ejs.js"></script>
 </body>
+
 </html>

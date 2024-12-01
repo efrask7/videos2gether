@@ -10,6 +10,7 @@ body {
 
 header {
     grid-area: header;
+    background: #242424;
 }
 
 main {
@@ -18,4 +19,9 @@ main {
 
 footer {
     grid-area: footer;
+}
+
+.bg-card {
+    background: #f8f9fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }

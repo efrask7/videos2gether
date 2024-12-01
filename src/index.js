@@ -35,11 +35,12 @@ let uSession = session({ //LA SESION PARA PASARLA AL MIDDLEWARE
 });
 
 //MIDDLEWARES QUE USO
-app.use(express.static('public'));
+app.use(express.static('src/public'));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(uSession);
 app.set('view engine', 'ejs'); //EL VIEW ENGINE, PARA RENDERIZAR ARCHIVOS .ejs (similar a php)
+app.set('views', 'src/views'); 
 
 const DbInit = async () => { //FUNCION PARA CREAR LAS BASES DE DATOS (si no estan creadas)
     await users.sync();

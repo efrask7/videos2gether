@@ -1,21 +1,25 @@
+html {
+    color-scheme: light;
+}
+
 body {
     display: grid;
     place-content: center;
     height: 100vh;
-    background: linear-gradient(180deg, rgba(255,255,255,1) 5%, rgb(23, 120, 142) 95%);
-}
-
-.form {
-    width: 30rem;
-    height: 20rem;
+    background: #eaeaea !important;
 }
 
 .bg {
-    background: rgba(33, 37, 41, .8);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 }
 
-@media (min-width: 0) and (max-width: 576px) { /*(breakpoint - xs)*/
-    .form {
-        width: 25rem;
-    }
+#register, #login {
+    width: 100%;
+    margin: auto;
+}
+
+@media screen and (min-width: 768px) {
+    #register, #login {
+        width: 40rem;
+    };
 }

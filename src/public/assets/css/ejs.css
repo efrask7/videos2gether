@@ -24,4 +24,19 @@ footer {
 .bg-card {
     background: #f8f9fa;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: box-shadow .3s;
+}
+
+.bg-card:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 1);
+}
+
+.bg-section {
+    background: #f8f9fa;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    transition: box-shadow .3s;
+}
+
+.bg-section:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 1);
 }

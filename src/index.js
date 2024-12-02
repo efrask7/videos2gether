@@ -108,7 +108,7 @@ app.get('/', async (req, res) => {
     //SI SE PASA EL PARAMETRO DE USUARIO (se pasa cuando uno inicia sesion)
     if (req.query.username) {
         //busca al usuario con la funcion y llama a un callback para verificar si existe o si la contraseña es correcta
-        searchUser(req.query.username, req.query.password, (exist, correctPassword) => {
+        searchUser(req.query.username, req.query.password, async (exist, correctPassword) => {
             let data = {
                 method: "get",
                 user: req.query.username,
@@ -130,6 +130,9 @@ app.get('/', async (req, res) => {
 
             //GUARDA LA SESION
             req.session.username = req.query.username;
+
+            iHaveRooms = await getMyRooms(req.query.username)
+
             if (iHaveRooms) return res.render('index.ejs', { user: data, rooms: publicR, iHaveR: true, myRooms: iHaveRooms, list: false, search: false });
 
             res.render('index.ejs', { user: data, rooms: publicR, iHaveR: false, list: false, search: false });

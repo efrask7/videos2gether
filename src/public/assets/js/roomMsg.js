@@ -234,7 +234,6 @@ const userJoin = (user) => {
 const newMsgFr = (user, message, self) => {
     let msgCont = document.createElement('div');
     msgCont.classList.add('message');
-    msgCont.classList.add('text-white');
     msgCont.classList.add('w-100');
 
     let userC = document.createElement('span');

@@ -1,18 +1,17 @@
 body {
-    display: grid;
-    grid-template-areas: 
-        "header"
-        "main";
-    grid-template-rows: 60px 1fr;
-    height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #eaeaea !important;
 }
 
 header {
-    grid-area: header;
+    background: #242424;
+    height: 60px;
 }
 
 main {
-    grid-area: main;
+    flex: 1;
 }
 
 .video {
@@ -45,12 +44,18 @@ p {
     flex-wrap: wrap;
 }
 
-#video_player {
+/* #video_player {
     height: 33rem;
-}
+} */
 
 .controls {
-    width: 90%;
+    background: #f8f9fa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: box-shadow .3s;
+}
+
+.controls:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 1);
 }
 
 .scale {
@@ -61,14 +66,20 @@ p {
     transform: scale(1.2);
 }
 
-#messages {
-    height: 90%;
-    overflow: hidden;
+.message {
+    border-top: 1px solid #222;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
 }
 
+/* #messages {
+    height: 90%;
+    overflow: hidden;
+} */
+/* 
 #messagesMobile {
     overflow: hidden;
-}
+} */
 
 .username {
     font-weight: bold;
@@ -119,10 +130,10 @@ p {
 }
 
 @media (min-width: 0) and (max-width: 576px) { /*(breakpoint - xs)*/
-    #messages {
+    /* #messages {
         font-size: 1.5rem;
         width: 90%;
-    }
+    } */
     .time {
         display: none;
     }
@@ -133,24 +144,24 @@ p {
     #chat_container {
         display: none;
     }
-    .search-bar {
+    /* .search-bar {
         width: 15rem;
-    }
+    } */
 }
   
 @media (min-width: 576px) and (max-width: 768px) { /*(breakpoint - sm)*/
-    #messages {
+    /* #messages {
         font-size: 1.5rem;
-    }
+    } */
     .time {
         display: none;
     }
     #video_player {
         height: 10rem;
     }
-    .search-bar {
+    /* .search-bar {
         width: 15rem;
-    }
+    } */
 
 }
   

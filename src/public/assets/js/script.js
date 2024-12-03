@@ -41,10 +41,10 @@ let resultsOnScreen = false;
 socket.on('resultV', data => { //EL SERVIDOR ENVIA LOS RESULTADOS Y LOS MUESTRA
     addVideo(data.title, data.video_img, data.id, data.creator, data.creator_img);
 
-    if (!resultsOnScreen) {
-        new bootstrap.Modal(results).show();
-        resultsOnScreen = true;
-    }
+        // if (!resultsOnScreen) {
+        //     new bootstrap.Modal(results).show();
+        //     resultsOnScreen = true;
+        // }
 });
 
 results.addEventListener('hidden.bs.modal', () => resultsOnScreen = false );

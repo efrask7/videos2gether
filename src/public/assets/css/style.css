@@ -72,6 +72,11 @@ p {
     padding-bottom: .25rem;
 }
 
+#messages > div, #messagesMobile > div {
+    padding-left: .75rem;
+    padding-right: .75rem;
+}
+
 /* #messages {
     height: 90%;
     overflow: hidden;
@@ -157,7 +162,7 @@ p {
         display: none;
     }
     #video_player {
-        height: 10rem;
+        height: 20rem;
     }
     /* .search-bar {
         width: 15rem;

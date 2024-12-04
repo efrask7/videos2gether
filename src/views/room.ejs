@@ -82,7 +82,7 @@
 	<main class="d-flex overflow-hidden">
 		<div class="container-fluid flex-fill d-flex flex-column py-2">
 
-			<div class="controls rounded">
+			<div class="controls rounded d-flex gap-2">
 				<div class="col-xs-12 col-md-8 col-lg-9 justify-content-center d-flex flex-wrap">
 					<div class="frame">
 						<!-- <video id="video_player" class="border border-secondary rounded-3 p-1"> -->
@@ -140,15 +140,15 @@
 					</div>
 				</div>
 
-				<div class="d-sm-none d-md-block col-md-3 col-lg-3 mt-2" id="chat_container">
+				<div class="d-sm-none d-md-block w-100 p-2" id="chat_container">
 					<div class="d-flex align-items-center justify-content-between">
-						<h5 class="display 6 fs-6 text-white">Chat de la sala</h5>
+						<h5 class="display 6 fs-6">Chat de la sala</h5>
 
 						<div class="align-items-center">
 							<button type="button" class="btn" id="btnHistory"><i class="bi bi-clock-history text-white"></i></button>
 							<button type="button" class="btn"
 								onclick="new bootstrap.Modal(document.getElementById('users')).show()"><i
-									class="bi bi-person-fill text-white"></i> <span id="usersOnline" class="text-success">
+									class="bi bi-person-fill"></i> <span id="usersOnline" class="text-success">
 									<%= room.users %>
 								</span></button>
 						</div>
@@ -167,9 +167,9 @@
                             <span class="username" id="username">Eliisk</span>: Hola a todos buen dia
                         </div> -->
 					</div>
-					<div class="input-m mt-1">
+					<div class="input-group">
 						<input type="text" placeholder="Ingresa tu mensaje" class="form-control" id="input-msg">
-						<button class="btn text-primary ms-1" type="button" id="btn-send_1"><i class="bi bi-send"></i></button>
+						<button class="btn btn-primary" type="button" id="btn-send_1"><i class="bi bi-send"></i></button>
 					</div>
 				</div>
 			</div>

@@ -183,10 +183,17 @@ p {
     .time {
         width: 20rem;
     }
+    #video_player {
+        height: 30rem;
+    }
 }
   
 @media (min-width: 1200px) {
     .time {
         width: 30rem;
+    }
+    #video_player {
+        height: 30rem;
+        width: auto;
     }
 }

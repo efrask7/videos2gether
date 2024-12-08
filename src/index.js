@@ -305,7 +305,10 @@ io.on('connection', async (socket) => {
 
 
         //PREGUNTA SI ES ADMIN DE LA SALA
-        if (await getAdmin(data.room, data.user)) socket.emit('admin', true);
+        const userIsAdmin = await getAdmin(data.room, data.user)
+        if (userIsAdmin) {
+            socket.emit('admin', true);
+        }
 
         //LO AGREGA A LA SALA EN LA DB
         addUserToRoom(data.room, data.user);

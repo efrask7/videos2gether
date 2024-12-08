@@ -37,9 +37,7 @@
 
 					<div class="user text-white align-items-center d-flex">
 						<div class="fs-4">
-							<span id="user">
-								<%= user.user %>
-							</span> <i class="bi bi-person-circle"></i>
+							<span id="user"><%= user.user %></span> <i class="bi bi-person-circle"></i>
 						</div>
 						<div class="dropdown ms-2">
 							<a class="dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink"
@@ -116,11 +114,11 @@
 									</div>
 								</div>
 	
-								<!-- <div class="time d-lg-flex">
+								<div class="time d-lg-flex">
 									<span class="me-2" id="current-time">0:00</span>
 									<input type="range" min="0" max="230" class="form-range" id="time-range">
 									<span class="ms-2" id="max-time">0:00</span>
-								</div> -->
+								</div>
 	
 								<div class="btn-group">
 									<button class="btn rounded-0" id="btn-pip"><i class="bi bi-pip"></i></button>
@@ -153,7 +151,7 @@
 								</span></button>
 						</div>
 					</div>
-					<div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2" id="messages"
+					<div class="border border-light rounded-2 d-flex flex-wrap align-content-end p-2 overflow-hidden" id="messages"
 						style="height: 75vh;">
 						<!-- <div class="userJoin text-secondary w-100">
                             <span class="join">elii_sk</span> entro a la sala
@@ -281,12 +279,12 @@
 		</div>
 	</div>
 
-	<div class="modal" id="users">
+	<div class="modal fade" id="users">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title"><i class="bi bi-person-fill text-success"></i> Usuarios en la sala:</h5>
-					<button class="btn btn-close" type="button" data-bs-toggle="modal" aria-label="Cerrar"></button>
+				<div class="modal-header bg-primary text-white">
+					<h5 class="modal-title">Usuarios en la sala</h5>
+					<button class="btn btn-close btn-close-white" type="button" data-bs-toggle="modal" aria-label="Cerrar"></button>
 				</div>
 
 				<div class="modal-body">
@@ -295,9 +293,10 @@
 							<tr>
 								<th scope="col">Nombre</th>
 								<% if (user.admin) { %>
-									<th scope="col">Expulsar</th>
+									<th scope="col">Acciones</th>
+									<!-- <th scope="col">Expulsar</th>
 									<th scope="col">Banear</th>
-									<th scope="col">Transferir admin</th>
+									<th scope="col">Transferir admin</th> -->
 									<% } %>
 							</tr>
 						</thead>

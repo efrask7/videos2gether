@@ -2,14 +2,13 @@ import { userJoin, addUserTable, removeUserTable, addVideo, msgAdmin, userLeaveA
 import { pause, resume, previous, next } from '/assets/js/player.js';
 import { search, sendMsg } from '/assets/js/script.js';
 
-const username = document.getElementById('user').innerHTML;
+const username = document.getElementById('user').innerHTML.trim();
 const player = document.getElementById('video_player');
 let data = new URLSearchParams(window.location.search);
 
 const socket = io(); //DE ESTA FORMA SE CONECTA AL SERVIDOR
 
 let imAdmin = false;
-
 
 socket.on('newTime', time => player.currentTime = time); //EL SERVIDOR MANDA ESTE EVENTO CUANDO ALGUIEN ADELANTA O ATRASA EL VIEDO
 //PARA CAMBIARLO EN CADA USUARIO
@@ -104,6 +103,7 @@ socket.on('addUsers', data => {
 //(banear, expulsar, transferir admin);
 socket.on('admin', boolean => {
     imAdmin = boolean;
+    console.log('hola', boolean)
 });
 
 //EL SERVIDOR MANDA UN ERROR CUANDO NO SE PUDO REPRODUCIR UN VIDEO :(

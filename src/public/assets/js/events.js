@@ -48,6 +48,7 @@ input_msg_mobile.addEventListener('focusout', () => {
 let inputRange = false;
 
 setInterval(() => {
+    if (!player) return
     if (player.paused || player.ended || inputRange) return;
     document.getElementById('current-time').innerHTML = getMinutes(player.currentTime);
     document.getElementById('time-range').value = player.currentTime;

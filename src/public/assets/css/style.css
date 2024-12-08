@@ -176,6 +176,7 @@ p {
     }
     #video_player {
         height: 23rem;
+        border-radius: var(--bs-border-radius) 0 0 0 !important;
     }
 }
   
@@ -185,6 +186,7 @@ p {
     }
     #video_player {
         height: 30rem;
+        border-radius: var(--bs-border-radius) 0 0 0 !important;
     }
 }
   
@@ -195,5 +197,6 @@ p {
     #video_player {
         height: 30rem;
         width: auto;
+        border-radius: var(--bs-border-radius) 0 0 0 !important;
     }
 }

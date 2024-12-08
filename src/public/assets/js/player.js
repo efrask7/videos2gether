@@ -8,6 +8,8 @@ const player = document.getElementById('video_player');
 
 const getMinutes = (s) => { //FUNCION PARA PASAR DE SEGUNDOS A MINUTOS
 
+    if (!s) return `00:00`
+
     var minutes = Math.floor(s/60);
     var seconds = undefined;
 

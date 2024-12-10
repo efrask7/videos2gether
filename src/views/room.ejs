@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/assets/css/style.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+	<script src="https://www.youtube.com/iframe_api"></script>
 </head>
 
 <body>
@@ -29,11 +30,10 @@
 								class="bi bi-share text-white"></i></button>
 					</div>
 
-					 <!-- Replace search containers with single button -->
-                    <button class="btn" type="button" 
-                        onclick="new bootstrap.Modal(document.getElementById('modal')).show()">
-                        <i class="bi bi-search text-white"></i>
-                    </button>
+					<button class="btn" type="button" 
+							onclick="new bootstrap.Modal(document.getElementById('modal')).show()">
+							<i class="bi bi-search text-white"></i>
+					</button>
 
 					<div class="user text-white align-items-center d-flex">
 						<div class="fs-4">
@@ -83,17 +83,17 @@
 			<div class="controls rounded d-flex gap-2">
 				<div class="col-xs-12 col-md-8 col-lg-9 justify-content-center d-flex flex-wrap">
 					<div class="frame">
-						<!-- <video id="video_player" class="border border-secondary rounded-3 p-1"> -->
-							<!-- <audio id="audio_player"></audio> -->
-						<!-- </video> -->
-						<iframe 
+						<div class="w-100 ratio ratio-16x9 border border-secondary rounded-top bg-dark p-1" id="video_player">
+
+						</div>
+						<!-- <iframe 
 							src="https://www.youtube.com/embed/KLuTLF3x9sA?si=wAqe4xir8sxReFvi" 
 							id="video_player" 
 							class="w-100 ratio ratio-16x9 border border-secondary rounded-top bg-dark p-1"
 							autoplay
 							muted
 						>
-						</iframe>
+						</iframe> -->
 
 						<div class="w-100 text-black rounded-2 d-flex flex-column gap-2 align-items-center">
 							<div class="d-flex justify-content-between w-100 border-bottom border-dark">
@@ -378,6 +378,7 @@
 	</div>
 
 
+	<script src="/assets/js/initPlayer.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script type="module" src="/assets/js/script.js"></script>
 	<script type="module" src="/assets/js/socketScript.js"></script>

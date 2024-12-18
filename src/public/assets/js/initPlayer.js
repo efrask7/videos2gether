@@ -10,7 +10,7 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player('video_player', {
     height: '100%',
     width: '100%',
-    videoId: 'KLuTLF3x9sA',
+    // videoId: 'KLuTLF3x9sA',
     playerVars: {
       'playsinline': 1,
       'enablejsapi': 1,
@@ -18,12 +18,10 @@ function onYouTubeIframeAPIReady() {
       'autoplay': 1,
       'controls': 0,
       'mute': 1,
-    },
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
     }
   });
+  window.player = player
+  console.log(Object.keys(player))
 }
 
 function onPlayerReady(event) {
@@ -36,9 +34,13 @@ let done = false;
 function onPlayerStateChange(event) {
   // Manejar cambios de estado
   console.log('Player state changed:', event.data);
-  if (event.data == YT.PlayerState.PLAYING && !done) {
-    setTimeout(stopVideo, 6000);
-    done = true;
+  // if (event.data == YT.PlayerState.PLAYING && !done) {
+  //   setTimeout(stopVideo, 6000);
+  //   done = true;
+  // }
+  if (event.data == YT.PlayerState.ENDED) {
+    // socket.emit('finish');
+    // socket.emit('currentTime', player.currentTime);
   }
 }
 
@@ -48,4 +50,4 @@ function stopVideo() {
 }
 
 // Exportar el player para usarlo en otros archivos
-window.player = player;
+window.player = player

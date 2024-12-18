@@ -10,16 +10,18 @@ son muchas pero creo que con el nombre y los parametros es entendible que hacen
 
 
 
-const newValue = (name) => {
+const newValue = (name, url) => {
     return {
-        name: name
+        name,
+        url
     };
 };
 
-const defaultValue = (name) => {
+const defaultValue = (name, url) => {
     return {
         1: {
-            name: name
+            name,
+            url
         }
     }
 };
@@ -40,17 +42,18 @@ const findNewId = async (room) => {
 };
 
 const updateVideos = async (room, video) => {
+    console.log('hola si llegando', room)
     const tag = await rooms.findOne({ where: {id: room} });
     if (!tag) return -1;
 
     if (!tag.get('videos')) {
-        rooms.update({ videos: JSON.stringify(defaultValue(video)) }, { where: {id: room} });
+        rooms.update({ videos: JSON.stringify(defaultValue(video.name, video.url)) }, { where: {id: room} });
         return 1;
     }
 
     let videos = JSON.parse(tag.get('videos'));
 
-    videos[await findNewId(room)] = newValue(video);
+    videos[await findNewId(room)] = newValue(video.name, video.url);
 
     rooms.update({ videos: JSON.stringify(videos) }, { where: {id: room} });
 
@@ -79,7 +82,7 @@ const playingVideo = async (room, callback) => {
     if (tag.get('playing')) {
         let videos = JSON.parse(tag.get('videos'));
 
-        return callback(true, tag.get('playing'), tag.get('current'), tag.get('status'), videos[tag.get('playing')].name);
+        return callback(true, tag.get('playing'), tag.get('current'), tag.get('status'), tag.get('playing') ? videos[tag.get('playing')].name : null);
     }
     else return callback(true, false);
 };
@@ -286,5 +289,14 @@ const getHistory = async room => {
     return name;
 }
 
+const getVideoFromRoom = async (room, id) => {
+    const tag = await rooms.findOne({ where: {id: room} });
+    if (!tag) return false;
 
-export { findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom, getHistory, restartOnlineUsers };
+    let videos = JSON.parse(tag.get('videos'));
+
+    return videos[id];
+}
+
+
+export { getVideoFromRoom, findNewId, updateVideos, playing, noPlaying, playingVideo, updateTime, previousV, nextV, stopV, updateStatus, getDurationActual, getAllRooms, addOnlineM, removeOnlineM, getMyRooms, deleteRoom, getAdmin, changePw, changeName, addUserToRoom, getUsers, removeUserFromRoom, getHistory, restartOnlineUsers };

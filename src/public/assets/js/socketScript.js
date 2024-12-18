@@ -3,14 +3,26 @@ import { pause, resume, previous, next } from '/assets/js/player.js';
 import { search, sendMsg } from '/assets/js/script.js';
 
 const username = document.getElementById('user').innerHTML.trim();
-const player = document.getElementById('video_player');
 let data = new URLSearchParams(window.location.search);
+const player = window.player
+console.log(player)
+console.log(player.seekTo)
 
 const socket = io(); //DE ESTA FORMA SE CONECTA AL SERVIDOR
 
+
+
+
 let imAdmin = false;
 
-socket.on('newTime', time => player.currentTime = time); //EL SERVIDOR MANDA ESTE EVENTO CUANDO ALGUIEN ADELANTA O ATRASA EL VIEDO
+player.addEventListener('onStateChange', e => {
+    if (e.data === YT.PlayerState.ENDED) {
+        socket.emit('finish');
+        socket.emit('currentTime', player.currentTime);
+    }
+}) //CUANDO CAMBIA EL ESTADO DEL REPRODUCTOR)
+
+socket.on('newTime', time => player.seekTo(time)); //EL SERVIDOR MANDA ESTE EVENTO CUANDO ALGUIEN ADELANTA O ATRASA EL VIEDO
 //PARA CAMBIARLO EN CADA USUARIO
 
 socket.on('user_connected', data => { /*CUANDO SE CONECTA UN USUARIO MANDA AL
@@ -21,21 +33,24 @@ DONDE TODOS ESTAN VIENDO*/
         return;
     }
 
-    socket.emit('currentTime', player.currentTime);
+    socket.emit('currentTime', player.getCurrentTime());
 });
 
-socket.on('durationV', time => { //EL SERVIDOR EMITE LA DURACION DEL VIDEO PARA PONERLO EN EL REPRODUCTOR
-    player.currentTime = time
+socket.on('durationV', time => { //EL SERVIDOR EMITE LA DURACION DEL VIDEO PARA PONERLO EN EL REPRODUCTORpla
+    console.log('seeking', player.seekTo)
+    player.seekTo(time)
     //playerAud.currentTime = time;
 });
 
 socket.on('video', async (data) => { //CUANDO SE CAMBIA EL VIDEO LO PONE EN EL REPRODUCTOR
     const title = document.getElementById('title');
 
-    player.src = `${await data.url}`;
+    // player.src = `${await data.url}`;
     //playerAud.src = `${await data.url}.mp3`;
+    const vidUrl = new URL(data.url)
+    const vidID = vidUrl.searchParams.get('v')
     
-    player.play();
+    player.loadVideoById(vidID);
     //playerAud.play();
     
     nowPlaying(data.name);
@@ -45,13 +60,13 @@ socket.on('video', async (data) => { //CUANDO SE CAMBIA EL VIDEO LO PONE EN EL R
 
 //EVENTOS DEL SERVIDOR PARA CUANDO ALGUIEN PAUSA, REPRODUCE, etc EL VIDEO
 socket.on('paused', e => {
-    player.pause();
+    player.pauseVideo();
     //playerAud.pause();
     newStatus(e, 'pauso');
 });
 
 socket.on('resumed', e => {
-    player.play();
+    player.playVideo();
     //playerAud.play();
     newStatus(e, 'reanudo');
 });
@@ -103,7 +118,6 @@ socket.on('addUsers', data => {
 //(banear, expulsar, transferir admin);
 socket.on('admin', boolean => {
     imAdmin = boolean;
-    console.log('hola', boolean)
 });
 
 //EL SERVIDOR MANDA UN ERROR CUANDO NO SE PUDO REPRODUCIR UN VIDEO :(

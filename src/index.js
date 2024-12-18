@@ -11,9 +11,10 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { session_sequelize } from './db/session.js';
 import { getVideo, getVideoAndAudio } from './ytdl-functions.js';
-import { addOnlineM, addUserToRoom, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getHistory, getMyRooms, getUsers, nextV, playingVideo, previousV, removeOnlineM, removeUserFromRoom, restartOnlineUsers, stopV, updateStatus, updateTime } from './rooms_functions.js';
+import { addOnlineM, addUserToRoom, changeName, changePw, deleteRoom, getAdmin, getAllRooms, getDurationActual, getHistory, getMyRooms, getUsers, getVideoFromRoom, nextV, playing, playingVideo, previousV, removeOnlineM, removeUserFromRoom, restartOnlineUsers, stopV, updateStatus, updateTime, updateVideos } from './rooms_functions.js';
 import { getSocket, getUserFromSocket, setSocket, banUser, checkBan, transferAdm, getRoomsBans, delBan } from './users_functions.js';
 import { channel, searchVideo } from './yt_api.js';
+import 'dotenv/config';
 
 const sequelizeS = SequelizeStore(session.Store); //PARA GUARDAR LA SESION EN LA BASE DE DATOS DE SEQUELIZE
 
@@ -280,11 +281,12 @@ io.use(async (socket, next) => {
 
 //CUANDO UN CLIENTE SE CONECTA A UNA SALA
 io.on('connection', async (socket) => {
-
+    
     let id;
     let user;
-
+    
     socket.on('connected', async (data) => {
+        console.log("aASDASDSADASDASDASDASDASDASDSAd", data)
 
         //LO CONECTA A LA SALA
         socket.join(data.room);
@@ -437,7 +439,7 @@ io.on('connection', async (socket) => {
     socket.on('searchV', query => {
         searchVideo(query, (r) => {
             for (let i = 0; i < 10; i++) {
-                if (!r.items[i]) break;
+                if (!r || !r.items || !r.items[i]) break;
                 channel(r.items[i].snippet.channelId, (ch) => {
 
                     let data = { title: r.items[i].snippet.title, video_img: r.items[i].snippet.thumbnails.high.url, id: r.items[i].id.videoId, creator: ch.items[0].snippet.title, creator_img: ch.items[0].snippet.thumbnails.default.url }
@@ -453,7 +455,13 @@ io.on('connection', async (socket) => {
     io.emit('user_connected', { s_id: socket.id });
 
     //RECIBE LA URL DEL VIDEO
-    socket.on('url', (data) => {
+    socket.on('url', async (data) => {
+        const videoId = await updateVideos(id, data)
+        playing(id, videoId)
+        
+        io.in(id).emit('video', data)
+        
+        return
 
         getVideo(data.url, id, data.name, (err, url) => {
             if (err) {
@@ -466,6 +474,15 @@ io.on('connection', async (socket) => {
 
 
     });
+
+    socket.on('getVideo', async (data) => {
+        const videoId = data.id
+        const video = await getVideoFromRoom(id, videoId)
+
+        if (video) {
+            socket.emit('getVideo', video)
+        }
+    })
 });
 
 //EJECUTA EL SERVIDOR :)

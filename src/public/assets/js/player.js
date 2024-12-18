@@ -2,8 +2,8 @@ import { socket } from '/assets/js/socketScript.js';
 
 const data = new URLSearchParams(window.location.search);
 const username = document.getElementById('user').innerHTML;
+const player = window.player
 
-const player = document.getElementById('video_player');
 //const playerAud = document.getElementById('audio_player');
 
 const getMinutes = (s) => { //FUNCION PARA PASAR DE SEGUNDOS A MINUTOS
@@ -23,30 +23,65 @@ const getMinutes = (s) => { //FUNCION PARA PASAR DE SEGUNDOS A MINUTOS
     return `${minutes}:${seconds}`;
 }
 
-if (data.get('video')) { //SI SE ESTA REPRODUCIENDO UN VIDEO LO PONE EN EL REPRODUCTOR
+// if (data.get('video')) { //SI SE ESTA REPRODUCIENDO UN VIDEO LO PONE EN EL REPRODUCTOR
 
-    player.src = `rooms/${data.get('id')}/${data.get('video')}.mp4`;
-    player.currentTime = data.get('current');
+//     player.addEventListener('onReady', () => {
+//         console.log('si hay')
 
-    //playerAud.src = `rooms/${data.get('id')}/${data.get('video')}.mp3`;
-    //playerAud.currentTime = data.get('current');
+//         setTimeout(() => {
+//             socket.on('getVideo', (vidData) => {
+//                 console.log('llego video', vidData)
+//                 const vidUrl = new URL(vidData.url)
+//                 const vidID = vidUrl.searchParams.get('v')
+//                 player.loadVideoById(vidID)
+//                 document.getElementById('title').innerHTML = vidData.name 
+        
+//                 switch (data.get('status')) {
+//                     case "playing":
+//                         player.playVideo()
+//                         player.mute(); 
+//                         //playerAud.muted = true;
+//                         //playerAud.autoplay = true;
+//                         break;
+//                     case "paused":
+//                         player.pauseVideo();
+//                         //playerAud.pause();
+//                         break;
+//                 };
+        
+//                 socket.off('getVideo')
+//             })
+        
+//             socket.emit('getVideo', {
+//                 id: data.get('video')
+//             })
+//         }, 1000);
+//     })
 
-    switch (data.get('status')) {
+    
 
-        case "playing":
-            player.autoplay = true;
-            player.muted = true; 
-            //playerAud.muted = true;
-            //playerAud.autoplay = true;
-            break;
-        case "paused":
-            player.pause();
-            //playerAud.pause();
-            break;
-    };
+//     // console.log(data)
+//     // player.src = `rooms/${data.get('id')}/${data.get('video')}.mp4`;
+//     // player.currentTime = data.get('current');
 
-    document.getElementById('title').innerHTML = data.get('title');
-};
+//     // //playerAud.src = `rooms/${data.get('id')}/${data.get('video')}.mp3`;
+//     // //playerAud.currentTime = data.get('current');
+
+//     // switch (data.get('status')) {
+//     //     case "playing":
+//     //         player.playVideo()
+//     //         player.mute(); 
+//     //         //playerAud.muted = true;
+//     //         //playerAud.autoplay = true;
+//     //         break;
+//     //     case "paused":
+//     //         player.pauseVideo();
+//     //         //playerAud.pause();
+//     //         break;
+//     // };
+
+//     // document.getElementById('title').innerHTML = data.get('title');
+// };
 
 const sendUrl = (id, name) => { //MANDA LA URL AL SERVIDOR PARA REPRODUCIRLO
     let vid = {
@@ -57,10 +92,10 @@ const sendUrl = (id, name) => { //MANDA LA URL AL SERVIDOR PARA REPRODUCIRLO
     socket.emit('url', vid);
 }
 
-player.addEventListener('ended', () => { //CUANDO EL REPRODUCTOR TERMINA DE REPRODUCIR EL VIDEO EMITE QUE TERMINO ASI ACTUALIZA LA BASE DE DATOS
-    socket.emit('finish');
-    socket.emit('currentTime', player.currentTime);
-});
+// player.addEventListener('ended', () => { //CUANDO EL REPRODUCTOR TERMINA DE REPRODUCIR EL VIDEO EMITE QUE TERMINO ASI ACTUALIZA LA BASE DE DATOS
+//     socket.emit('finish');
+//     socket.emit('currentTime', player.currentTime);
+// });
 
 //player.addEventListener('mouseenter', () => {
     //if (playerAud.muted) playerAud.muted = false;
@@ -68,12 +103,12 @@ player.addEventListener('ended', () => { //CUANDO EL REPRODUCTOR TERMINA DE REPR
 
 //FUNCIONES PARA PAUSAR, REPRODUCIR, etc EL VIDEO
 const pause = () => {
-    if (player.paused) return;
+    if (player.getPlayerState() === 2) return;
     socket.emit('pause', username);
 };
 
 const resume = () => {
-    if (!player.paused) return;
+    if (player.getPlayerState() === 2) return;
     socket.emit('resume', username);
 };
 
@@ -90,9 +125,9 @@ const next = () => {
 const input_vol = document.getElementById('volume');
 
 input_vol.addEventListener('input', () => {
-    if (player.muted) player.muted = false;
+    if (player.isMuted()) player.unMute();
 
-    player.volume = input_vol.value;
+    player.setVolume(input_vol.value);
 });
 
 export { sendUrl, getMinutes, pause, resume, previous, next };

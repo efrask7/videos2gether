@@ -1,6 +1,7 @@
 import { users } from "./users.js";
 import { rooms } from "./rooms.js";
 import { Op } from "sequelize";
+import bcrypt from "bcrypt"
 
 //FUNCIONES PARA AGREGAR DATOS DE USUARIO O UNA SALA
 
@@ -8,7 +9,8 @@ import { Op } from "sequelize";
 
 const newUser = async (user, pass, callback) => {
     try {
-        const tag = await users.create({ username: user, password: pass});
+        const encryptedPassword = await bcrypt.hash(pass, 10)
+        const tag = await users.create({ username: user, password: encryptedPassword});
         console.log(`Usuario: ${user} registrado con el ID: ${tag.id}`);
         return callback(false, tag.id);
     } catch (e) {
@@ -24,7 +26,9 @@ const searchUser = async (user, pass, callback) => {
     const tag = await users.findOne({ where: { username: user } });
     if (!tag) return callback(false);
 
-    if (tag.get('password') != pass) return callback(true, false);
+    const compare = await bcrypt.compare(pass, tag.get('password'))
+
+    if (!compare) return callback(true, false);
 
     return callback(true, true);
 }

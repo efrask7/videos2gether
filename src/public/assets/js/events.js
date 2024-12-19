@@ -2,8 +2,6 @@ import { sendMsg, search } from '/assets/js/script.js';
 import { getMinutes } from '/assets/js/player.js';
 import { socket } from '/assets/js/socketScript.js';
 
-const player = document.getElementById('video_player');
-
 //EVENTOS PARA LOS INPUTS
 
 const input_msg = document.getElementById('input-msg');
@@ -49,18 +47,19 @@ let inputRange = false;
 
 setInterval(() => {
     if (!player) return
-    if (player.paused || player.ended || inputRange) return;
-    document.getElementById('current-time').innerHTML = getMinutes(player.currentTime);
-    document.getElementById('time-range').value = player.currentTime;
-    document.getElementById('time-range').max = player.duration;
-    document.getElementById('max-time').innerHTML = getMinutes(player.duration);
+    const playerStatus = player.getPlayerState()
+    if (playerStatus != 1) return;
+    document.getElementById('current-time').innerHTML = getMinutes(player.getCurrentTime());
+    document.getElementById('time-range').value = player.getCurrentTime();
+    document.getElementById('time-range').max = player.getDuration();
+    document.getElementById('max-time').innerHTML = getMinutes(player.getDuration());
 
     //
 
-    document.getElementById('current-time2').innerHTML = getMinutes(player.currentTime);
-    document.getElementById('time-range2').value = player.currentTime;
-    document.getElementById('time-range2').max = player.duration;
-    document.getElementById('max-time2').innerHTML = getMinutes(player.duration);
+    document.getElementById('current-time2').innerHTML = getMinutes(player.getCurrentTime());
+    document.getElementById('time-range2').value = player.getCurrentTime();
+    document.getElementById('time-range2').max = player.getDuration();
+    document.getElementById('max-time2').innerHTML = getMinutes(player.getDuration());
 }, 1000);
 
 const t_range = document.getElementById('time-range');

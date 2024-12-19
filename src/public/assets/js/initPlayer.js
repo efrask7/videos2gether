@@ -18,15 +18,31 @@ function onYouTubeIframeAPIReady() {
       'autoplay': 1,
       'controls': 0,
       'mute': 1,
+    },
+    events: {
+      'onReady': onPlayerReady
     }
   });
   window.player = player
-  console.log(Object.keys(player))
 }
 
 function onPlayerReady(event) {
   // El video está listo para reproducirse
   console.log('Player ready');
+  async function loadScripts() {
+    const scripts = ['/script.js', '/socketScript.js', '/events.js', '/player.js', '/roomMsg.js'];
+    for (let path of scripts) {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = `/assets/js${path}`;
+      await new Promise((resolve, reject) => {
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+  }
+  loadScripts().catch(console.error);
 }
 
 let done = false;

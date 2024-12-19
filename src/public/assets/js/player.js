@@ -23,65 +23,63 @@ const getMinutes = (s) => { //FUNCION PARA PASAR DE SEGUNDOS A MINUTOS
     return `${minutes}:${seconds}`;
 }
 
-// if (data.get('video')) { //SI SE ESTA REPRODUCIENDO UN VIDEO LO PONE EN EL REPRODUCTOR
+if (data.get('video')) { //SI SE ESTA REPRODUCIENDO UN VIDEO LO PONE EN EL REPRODUCTOR
 
-//     player.addEventListener('onReady', () => {
-//         console.log('si hay')
+        console.log('si hay')
 
-//         setTimeout(() => {
-//             socket.on('getVideo', (vidData) => {
-//                 console.log('llego video', vidData)
-//                 const vidUrl = new URL(vidData.url)
-//                 const vidID = vidUrl.searchParams.get('v')
-//                 player.loadVideoById(vidID)
-//                 document.getElementById('title').innerHTML = vidData.name 
+        setTimeout(() => {
+            socket.on('getVideo', (vidData) => {
+                console.log('llego video', vidData)
+                const vidUrl = new URL(vidData.url)
+                const vidID = vidUrl.searchParams.get('v')
+                player.loadVideoById(vidID)
+                document.getElementById('title').innerHTML = vidData.name 
         
-//                 switch (data.get('status')) {
-//                     case "playing":
-//                         player.playVideo()
-//                         player.mute(); 
-//                         //playerAud.muted = true;
-//                         //playerAud.autoplay = true;
-//                         break;
-//                     case "paused":
-//                         player.pauseVideo();
-//                         //playerAud.pause();
-//                         break;
-//                 };
+                switch (data.get('status')) {
+                    case "playing":
+                        player.playVideo()
+                        player.mute(); 
+                        //playerAud.muted = true;
+                        //playerAud.autoplay = true;
+                        break;
+                    case "paused":
+                        player.pauseVideo();
+                        //playerAud.pause();
+                        break;
+                };
         
-//                 socket.off('getVideo')
-//             })
+                socket.off('getVideo')
+            })
         
-//             socket.emit('getVideo', {
-//                 id: data.get('video')
-//             })
-//         }, 1000);
-//     })
+            socket.emit('getVideo', {
+                id: data.get('video')
+            })
+        }, 1000);
 
     
 
-//     // console.log(data)
-//     // player.src = `rooms/${data.get('id')}/${data.get('video')}.mp4`;
-//     // player.currentTime = data.get('current');
+    // console.log(data)
+    // player.src = `rooms/${data.get('id')}/${data.get('video')}.mp4`;
+    // player.currentTime = data.get('current');
 
-//     // //playerAud.src = `rooms/${data.get('id')}/${data.get('video')}.mp3`;
-//     // //playerAud.currentTime = data.get('current');
+    // //playerAud.src = `rooms/${data.get('id')}/${data.get('video')}.mp3`;
+    // //playerAud.currentTime = data.get('current');
 
-//     // switch (data.get('status')) {
-//     //     case "playing":
-//     //         player.playVideo()
-//     //         player.mute(); 
-//     //         //playerAud.muted = true;
-//     //         //playerAud.autoplay = true;
-//     //         break;
-//     //     case "paused":
-//     //         player.pauseVideo();
-//     //         //playerAud.pause();
-//     //         break;
-//     // };
+    // switch (data.get('status')) {
+    //     case "playing":
+    //         player.playVideo()
+    //         player.mute(); 
+    //         //playerAud.muted = true;
+    //         //playerAud.autoplay = true;
+    //         break;
+    //     case "paused":
+    //         player.pauseVideo();
+    //         //playerAud.pause();
+    //         break;
+    // };
 
-//     // document.getElementById('title').innerHTML = data.get('title');
-// };
+    // document.getElementById('title').innerHTML = data.get('title');
+};
 
 const sendUrl = (id, name) => { //MANDA LA URL AL SERVIDOR PARA REPRODUCIRLO
     let vid = {

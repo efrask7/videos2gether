@@ -4,9 +4,9 @@ import { search, sendMsg } from '/assets/js/script.js';
 
 const username = document.getElementById('user').innerHTML.trim();
 let data = new URLSearchParams(window.location.search);
-const player = window.player
+// const player = window.player
 console.log(player)
-console.log(player.seekTo)
+console.log(Object.keys(player))
 
 const socket = io(); //DE ESTA FORMA SE CONECTA AL SERVIDOR
 
@@ -37,18 +37,19 @@ DONDE TODOS ESTAN VIENDO*/
 });
 
 socket.on('durationV', time => { //EL SERVIDOR EMITE LA DURACION DEL VIDEO PARA PONERLO EN EL REPRODUCTORpla
-    console.log('seeking', player.seekTo)
     player.seekTo(time)
     //playerAud.currentTime = time;
 });
 
 socket.on('video', async (data) => { //CUANDO SE CAMBIA EL VIDEO LO PONE EN EL REPRODUCTOR
     const title = document.getElementById('title');
-
+    
+    console.log('loading video', data)
     // player.src = `${await data.url}`;
     //playerAud.src = `${await data.url}.mp3`;
     const vidUrl = new URL(data.url)
     const vidID = vidUrl.searchParams.get('v')
+
     
     player.loadVideoById(vidID);
     //playerAud.play();

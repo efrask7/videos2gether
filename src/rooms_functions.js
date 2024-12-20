@@ -106,7 +106,7 @@ const previousV = async (room) => {
     if (videos[(tag.get('playing') - 1)]) {
         await rooms.update({ playing: (tag.get('playing') - 1) }, { where: {id: room} });
         await tag.reload();
-        return {name: videos[tag.get('playing')].name, id: tag.get('playing') };
+        return videos[tag.get('playing')];
     } else return false;
 };
 
@@ -119,7 +119,7 @@ const nextV = async (room) => {
     if (videos[(tag.get('playing') + 1)]) {
         await rooms.update({ playing: (tag.get('playing') + 1) }, { where: {id: room} });
         await tag.reload();
-        return {name: videos[tag.get('playing')].name, id: tag.get('playing') };
+        return videos[tag.get('playing')];
     } else return false;
 };
 

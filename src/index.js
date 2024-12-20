@@ -414,7 +414,7 @@ io.on('connection', async (socket) => {
         let vid = await previousV(id);
 
         if (vid) {
-            io.in(id).emit('video', { name: vid.name, url: `rooms/${id}/${vid.id}.mp4`});
+            io.in(id).emit('video', vid);
         }
     });
 
@@ -430,7 +430,7 @@ io.on('connection', async (socket) => {
         let vid = await nextV(id);
 
         if (vid) {
-            io.in(id).emit('video', { name: vid.name, url: `rooms/${id}/${vid.id}.mp4`});
+            io.in(id).emit('video', vid);
         }
     });
 

@@ -22,14 +22,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url)); //__dirname no viene 
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer); //servidor socket.io para comuniar server/cliente
+const io = new Server(httpServer, {
+    cors: {
+        origin: ['https://watch2gether.efrask.dev', 'https://w2g.efrask.dev', 'https://play2gether.efrask.dev', 'https://p2g.efrask.dev', 'https://videos2gether.efrask.dev', 'https://v2g.efrask.dev']
+    }
+}); //servidor socket.io para comunicar server/cliente
 
 const sessionDB = new sequelizeS({ //BASE DE DATOS PARA LAS SESIONES
     db: session_sequelize,
 });
 
 let uSession = session({ //LA SESION PARA PASARLA AL MIDDLEWARE
-    secret: "secreto__lol",
+    secret: process.env.SECRET_SESSION,
     store: sessionDB,
     resave: false,
     saveUninitialized: false

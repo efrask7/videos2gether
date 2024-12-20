@@ -49,10 +49,10 @@ setInterval(() => {
     if (!player) return
     const playerStatus = player.getPlayerState()
     if (playerStatus != 1) return;
-    document.getElementById('current-time').innerHTML = getMinutes(player.getCurrentTime());
-    document.getElementById('time-range').value = player.getCurrentTime();
-    document.getElementById('time-range').max = player.getDuration();
-    document.getElementById('max-time').innerHTML = getMinutes(player.getDuration());
+    // document.getElementById('current-time').innerHTML = getMinutes(player.getCurrentTime());
+    // document.getElementById('time-range').value = player.getCurrentTime();
+    // document.getElementById('time-range').max = player.getDuration();
+    // document.getElementById('max-time').innerHTML = getMinutes(player.getDuration());
 
     //
 

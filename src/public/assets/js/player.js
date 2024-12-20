@@ -106,7 +106,7 @@ const pause = () => {
 };
 
 const resume = () => {
-    if (player.getPlayerState() === 2) return;
+    if (player.getPlayerState() != 2) return;
     socket.emit('resume', username);
 };
 
